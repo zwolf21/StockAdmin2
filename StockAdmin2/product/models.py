@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Market(models.Model):
@@ -40,6 +41,24 @@ class Product(models.Model):
         return self.name
 
    
+class BuyInfo(models.Model):
+    slug = models.SlugField('구매코드', unique=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    market = models.ForeignKey(Market, on_delete=models.CASCADE)
+    date = models.DateField('시작일자', blank=True, default=timezone.now)
+    price = models.DecimalField('구매가격', max_digits=50, decimal_places=2)
+    active = models.BooleanField('사용중', default=True)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = '구매정보'
+        verbose_name_plural = '구매정보'
+        ordering = '-created',
+
+    def __str__(self):
+        title = "{}-{}({:,.0f}원)".format(self.product.name, self.market.name, self.price)
+        return title
 
 
 
