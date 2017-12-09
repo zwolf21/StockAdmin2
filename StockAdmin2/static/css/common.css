@@ -1,0 +1,27 @@
+.datepicker {
+    width: 100px;
+    height: 25px !important;
+    background-color: lightgray;
+}
+
+input[name=search] {
+    height: 25px !important;
+}
+
+table.tablesorter thead {
+    text-align: center;
+}
+
+table.tablesorter input[type=text], table.tablesorter input[type=number], table.tablesorter select {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+table.tablesorter input[type=number] {
+    text-align: right;
+}
+
+td.amount {
+    width: 100px;
+}
