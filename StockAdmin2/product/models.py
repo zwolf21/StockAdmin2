@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+from .mixins import BuyInfoMixin
+
 
 class Market(models.Model):
     name = models.CharField('도매상명', max_length=50, unique=True)
@@ -41,7 +43,7 @@ class Product(models.Model):
         return self.name
 
    
-class BuyInfo(models.Model):
+class BuyInfo(BuyInfoMixin, models.Model):
     slug = models.SlugField('구매코드', unique=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     market = models.ForeignKey(Market, on_delete=models.CASCADE)
@@ -59,6 +61,7 @@ class BuyInfo(models.Model):
     def __str__(self):
         title = "{}-{}({:,.0f}원)".format(self.product.name, self.market.name, self.price)
         return title
+
 
 
 

@@ -1,11 +1,19 @@
 from django.contrib import admin
 
-from .models import Product, Market
+from .models import Product, Market, BuyInfo
+
 
 
 @admin.register(Market)
 class MarkeAdmin(admin.ModelAdmin):
     list_display = 'name', 'tel', 'fax', 'email',
+
+
+
+class BuyInfoInline(admin.TabularInline):
+    model = BuyInfo
+    extra = 0
+
 
 
 @admin.register(Product)
@@ -14,3 +22,12 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = 'std_unit',
     search_fields = 'name', 'company',
     list_editable = 'name', 'company', 'std_unit', 'pkg_amount',
+    inlines = BuyInfoInline,
+
+
+
+@admin.register(BuyInfo)
+class BuyInfoAdmin(admin.ModelAdmin):
+    list_display = 'product', 'market', 'date', 'price', 'active',
+    list_filter = 'date', 'active', 'product__std_unit',
+    search_fields = 'product__name',
