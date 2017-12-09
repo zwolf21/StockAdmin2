@@ -12,3 +12,4 @@ man/
 .Python
 *.py[cod]
 *.json
+db.sqlite3
