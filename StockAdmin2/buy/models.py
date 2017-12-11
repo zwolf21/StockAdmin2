@@ -57,3 +57,25 @@ class BuyItem(models.Model):
 
     def __str__(self):
         return str(self.buyinfo)
+
+
+
+class StockRecord(models.Model):
+    buyitem = models.ForeignKey(BuyItem, on_delete=models.CASCADE)
+    date = models.DateField('입고일자', blank=True, default=timezone.now)
+    amount = models.IntegerField('입고수량')
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = '입고기록'
+        verbose_name = '입고기록'
+        ordering = '-buyitemstock__created',
+
+    def __str__(self):
+        return str(self.buyitem)
+
+
+
+
+
