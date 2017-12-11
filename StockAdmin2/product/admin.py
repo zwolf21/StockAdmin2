@@ -21,8 +21,6 @@ class BuyInfoInline(admin.TabularInline):
     model = BuyInfo
     extra = 0
 
-
-
 @admin.register(Product)
 class ProductAdmin(ProductImportExportAdmin):
     list_display = 'code', 'name', 'company', 'std_unit', 'pkg_amount',
@@ -38,3 +36,4 @@ class BuyInfoAdmin(BuyInfoImportExportAdmin):
     list_display = 'product', 'market', 'date', 'price', 'active',
     list_filter = 'date', 'active', 'product__std_unit',
     search_fields = 'product__name',
+    autocomplete_fields = 'product',
