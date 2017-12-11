@@ -2,10 +2,17 @@ from django.contrib import admin
 
 from .models import Product, Market, BuyInfo
 
+try:
+    from core.imex.admin import ProductImportExportAdmin, MarketImportExportAdmin, BuyInfoImportExportAdmin
+except:
+    ProductImportExportAdmin = admin.ModelAdmin
+    MarketImportExportAdmin = admin.ModelAdmin
+    BuyInfoImportExportAdmin = admin.ModelAdmin
+
 
 
 @admin.register(Market)
-class MarkeAdmin(admin.ModelAdmin):
+class MarkeAdmin(MarketImportExportAdmin):
     list_display = 'name', 'tel', 'fax', 'email',
 
 
@@ -17,7 +24,7 @@ class BuyInfoInline(admin.TabularInline):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ProductImportExportAdmin):
     list_display = 'code', 'name', 'company', 'std_unit', 'pkg_amount',
     list_filter = 'std_unit',
     search_fields = 'name', 'company',
@@ -27,7 +34,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(BuyInfo)
-class BuyInfoAdmin(admin.ModelAdmin):
+class BuyInfoAdmin(BuyInfoImportExportAdmin):
     list_display = 'product', 'market', 'date', 'price', 'active',
     list_filter = 'date', 'active', 'product__std_unit',
     search_fields = 'product__name',
