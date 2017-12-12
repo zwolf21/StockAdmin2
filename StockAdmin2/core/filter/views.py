@@ -11,7 +11,7 @@ class QueryFilter(object):
         'search': SearchFilterForm
     }
 
-    def __init__(self, request, queryset):
+    def __init__(self, request, queryset=None):
         self.request = request
         self.queryset = queryset
 
@@ -29,7 +29,7 @@ class QueryFilter(object):
             search = search_form.cleaned_data.get('search')
             self.request.session['search'] = search
         else:
-            session_search = request.session.get('search')
+            session_search = self.request.session.get('search')
             if session_search:
                 search_form.fields['search'].initial = session_search
         return search_form
@@ -39,20 +39,26 @@ class QueryFilter(object):
         date_form = self.get_date_filter_form()
         qs = queryset or self.queryset
 
+        if not qs:
+            return qs
+
         if date_form.is_valid():
             start_date = date_form.cleaned_data.get('start_date')
             end_date = date_form.cleaned_data.get('end_date')
         else:
-            start_date = date_form.fields['start_data'].initial
+            start_date = date_form.fields['start_date'].initial
             end_date = date_form.fields['end_date'].initial
 
         date_q = Q(**{'{}__range'.format(date_field): [start_date, end_date]})
         return qs.filter(date_q)
 
 
-    def filter_by_search(self, keyword, app_name=None, queryset=None):
+    def filter_by_search(self, app_name=None, queryset=None):
         search_form = self.get_search_filter_form()
         qs = queryset or self.queryset
+
+        if not qs:
+            return qs
 
         if search_form.is_valid():
             searches = search_form.cleaned_data.get('search')

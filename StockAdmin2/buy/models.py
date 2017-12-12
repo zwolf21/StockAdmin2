@@ -6,6 +6,7 @@ from django.utils import timezone
 from utils.shortcuts import sequence_date_slugify
 
 
+
 class Buy(models.Model):
     slug = models.SlugField('구매번호', unique=True, blank=True, editable=False)
     commiter = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, on_delete=models.SET_NULL)

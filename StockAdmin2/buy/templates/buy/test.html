@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <form method="get" action=".">
+        {{ date_filter_form }}
+        {{ search_filter_form }}
+        <button type="submit">제출</button>
+    </form>
+    <ul>
+        {% for object in object_list %}
+        <li>{{ object }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
