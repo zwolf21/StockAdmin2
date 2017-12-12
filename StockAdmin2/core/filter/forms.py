@@ -8,7 +8,7 @@ class DateFilterForm(forms.Form):
 
 
 class SearchFilterForm(forms.Form):
-    search = forms.CharField(label='검색어')
+    search = forms.CharField(label='검색어', required=False)
 
 
 class MixedFililter(DateFilterForm):
