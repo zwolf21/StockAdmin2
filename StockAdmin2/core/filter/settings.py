@@ -64,4 +64,15 @@ LOOKUP_CONTEXTS = {
             'buyinfo__market__name',
         ]
     },
+    'Product': {
+        'contains': [
+            'name', 'company'
+        ],
+        'market': [
+            'buyinfo__market__name',
+        ],
+        'etc_class': [
+            'etc_class'
+        ]
+    }
 }
