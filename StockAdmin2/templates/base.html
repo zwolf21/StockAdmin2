@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %} StockAdmin2 {% endblock title %}</title>
+    <meta charset="utf-8">
+    {% include "components/static.html" %}
+    {% block extra_style %}{% endblock extra_style %}
+</head>
+<body>
+    {% include "components/navbar.html" %}
+    {% block content %}{% endblock content %}
+    {% block extra_script %}{% endblock extra_script %}
+</body>
+</html>

@@ -22,3 +22,4 @@ class TestView(ListView):
         qs = qf.filter_by_date('buy__date')
         qs = qf.filter_by_search(queryset=qs)
         return qs
+
