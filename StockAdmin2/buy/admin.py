@@ -6,6 +6,7 @@ from .models import Buy, BuyItem
 class BuyItemInline(admin.TabularInline):
     model = BuyItem
     extra = 0
+    autocomplete_fields = 'buyinfo',
 
 
 @admin.register(Buy)
@@ -20,3 +21,4 @@ class BuyItemAdmin(admin.ModelAdmin):
     list_filter = 'buy', 'isend',
     list_search = 'buyinfo__product__name',
     search_fields = 'buyinfo__product__name',
+    autocomplete_fields = 'buyinfo',
