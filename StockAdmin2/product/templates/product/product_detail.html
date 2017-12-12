@@ -1,0 +1,50 @@
+{% extends "product/product_base.html" %}
+
+
+{% block product_header %}
+<h4>제품 상세 정보</h4>
+<hr>
+{% endblock product_header %}
+{% block product_content %}
+<h5>기본정보</h5>
+
+<table class="product-info tablesorter" border="2">
+    <tr>
+        <th>제품코드</th>
+        <td>{{ object.code }}</td>
+        <th>제품명</th>
+        <td>{{ object.name }}</td>
+        <th>판매사</th>
+        <td>{{ object.company }}</td>
+    </tr>
+    <tr>
+        <th>포장수량:</th>
+        <td>{{ object.pkg_amount }}</td>
+        <th>규격단위:</th>
+        <td>{{ object.std_unit }}</td>
+        <th>기타구분:</th>
+        <td>{{ object.etc_class }}</td>
+    </tr>
+</table>
+<h5>거래정보</h5>
+<table class="product-info tablesorter">
+    <thead>
+        <tr>
+            <th>도매상</th>
+            <th>거래시작일</th>
+            <th>거래가격</th>
+            <th>사용중</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for info in object.buyinfo_set.all %}
+        <tr>
+            <td>{{ info.market }}</td>
+            <td>{{ info.date|date:"Y-m-d" }}</td>
+            <td>{{ info.price }}</td>
+            <td>{{ info.active }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock product_content %}

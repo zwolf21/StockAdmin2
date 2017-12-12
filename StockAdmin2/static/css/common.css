@@ -25,3 +25,7 @@ table.tablesorter input[type=number] {
 td.amount {
     width: 100px;
 }
+
+.product-info th {
+    text-align: center;
+}

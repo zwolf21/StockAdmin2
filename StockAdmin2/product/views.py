@@ -4,6 +4,7 @@ from django.views.generic import *
 from .models import Market, Product, BuyInfo
 from core.filter import QueryFilter
 
+
 class ProductListView(ListView):
     model = Product
 
@@ -19,3 +20,6 @@ class ProductListView(ListView):
         context['search_filter_form'] = qf.get_search_filter_form()
         return context
     
+
+class ProductDetailView(DetailView):
+    model = Product
