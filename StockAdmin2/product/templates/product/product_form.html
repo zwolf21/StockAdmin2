@@ -1,0 +1,64 @@
+{% extends "product/product_base.html" %}
+
+{% block product_header %}
+<h4>제품 정보 수정</h4>
+<hr>
+{% endblock product_header %}
+{% block product_content %}
+
+<div class="col-12">
+<h5>기본정보</h5>
+    <form method="post" action=".">
+        {% csrf_token %}     
+        <table class="product-info tablesorter" border="2">
+            <tr>
+                <th>제품코드</th>
+                <td>{{ form.code }}</td>
+                <th>제품명</th>
+                <td>{{ form.name }}</td>
+                <th>판매사</th>
+                <td>{{ form.company }}</td>
+            </tr>
+            <tr>
+                <th>포장수량:</th>
+                <td>{{ form.pkg_amount }}</td>
+                <th>규격단위:</th>
+                <td>{{ form.std_unit }}</td>
+                <th>기타구분:</th>
+                <td>{{ form.etc_class }}</td>
+            </tr>
+        </table>
+        <h5>거래정보</h5>
+        {{ formset.management_form }}
+        <table class="product-info tablesorter" border="1">
+            <thead>
+                <tr>
+                    <th>도매상</th>
+                    <th>거래시작일</th>
+                    <th>거래가격</th>
+                    <th>사용중</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for buyinfo_form in formset %}
+                    {% for hidden in buyinfo_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                <tr>
+                    <td>{{ buyinfo_form.market }}</td>
+                    <td>{{ buyinfo_form.date }}</td>
+                    <td>{{ buyinfo_form.price }}</td>
+                    <td class="text-center">{{ buyinfo_form.active }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="col-12 text-right">
+            {% if 'buyinfo' not in request.path %}
+            <a class="btn btn-warning btn-sm" href="{% url 'product:update-buyinfo-create' form.instance.pk %}">거래정보생성</a>
+            {% endif %}
+            <button class="btn btn-success btn-sm">저장</button>
+        </div>
+    </form>
+</div>
+{% endblock product_content %}

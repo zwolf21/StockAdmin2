@@ -1,13 +1,13 @@
 {% extends "product/product_base.html" %}
 
-
 {% block product_header %}
 <h4>제품 상세 정보</h4>
 <hr>
 {% endblock product_header %}
 {% block product_content %}
-<h5>기본정보</h5>
+<div class="col-12">
 
+<h5>기본정보</h5>
 <table class="product-info tablesorter" border="2">
     <tr>
         <th>제품코드</th>
@@ -27,7 +27,7 @@
     </tr>
 </table>
 <h5>거래정보</h5>
-<table class="product-info tablesorter">
+<table class="product-info tablesorter" border="1">
     <thead>
         <tr>
             <th>도매상</th>
@@ -47,4 +47,9 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
+<div class="col-12 text-right">
+    <a class="btn btn-info btn-sm" href="{% url 'product:list' %}">목록으로</a>
+    <a class="btn btn-warning btn-sm" href="{% url 'product:update' object.pk %}">제품 정보 수정</a>
+</div>
 {% endblock product_content %}
