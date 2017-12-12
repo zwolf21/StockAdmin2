@@ -1,3 +1,9 @@
 from django.shortcuts import render
+from django.views.generic import *
 
-# Create your views here.
+from .models import Market, Product, BuyInfo
+
+
+class ProductListView(ListView):
+    model = Product
+    

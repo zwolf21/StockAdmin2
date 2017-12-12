@@ -1,0 +1,31 @@
+{% extends "product/product_base.html" %}
+
+
+{% block product_header %}
+<h4>제품리스트</h4>
+{% endblock product_header %}
+
+{% block product_content %}
+<table class="tablesorter tablesorter-sortable">
+    <thead>
+        <tr>
+            <th>제품코드</th>
+            <th>제품명</th>
+            <th>판매사</th>
+            <th>포장단위</th>
+            <th>구분</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in object_list %}
+        <tr>
+            <td>{{ object.code }}</td>
+            <td>{{ object.name }}</td>
+            <td>{{ object.company }}</td>
+            <td>{{ object.pkg_amount }}</td>
+            <td>{{ object.etc_class }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock product_content %}

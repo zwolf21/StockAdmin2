@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="col-12 my-3">
+    {% block product_header %}{% endblock product_header %}
+    </div>
+    <div class="row">
+    {% block product_content %}{% endblock product_content %}
+    </div>
+</div>
+{% endblock content %}
