@@ -33,7 +33,7 @@ class Buy(models.Model):
         return super(Buy, self).save(**kwargs)
 
     def get_absolute_url(self):
-        return reverse('buy:detail', args=(self.slug,))
+        return reverse('buy:buy-detail', args=(self.slug,))
 
     @property
     def description(self):

@@ -1,0 +1,53 @@
+{% extends "buy/buy_base.html" %}
+{% load humanize %}
+{% block buy_header %}
+<h4>구매요청서 상세</h4>
+{% endblock buy_header %}
+
+{% block buy_content %}
+<div class="col-12 my-3">
+    도매상: {{ object.buyitem_set.first.buyinfo.market }}</br>
+    구매번호: {{ object.slug }}
+</div>
+<hr>
+<div class="col-12 px-3"> 
+    <table class="table-bordered tablesorter tablesorter-sortable">
+        <thead class="thead-default text-center">
+            <tr>
+                <th>연번</th>
+                <th>판매사</th>
+                <th>구매항목</th>
+                <th>구매수량</th>
+                <th>입고량</th>
+                <th>입고율</th>
+                <th>비고</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in object.buyitem_set.all %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td>{{ item.buyinfo.product.company }} </td>
+                <td>{{ item.buyinfo.product }}</td>
+                <td class="text-right">{{ item.amount|intcomma }} {{ item.buyinfo.product.std_unit }}</td>
+                <td>{{ item.stocked_amount }}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width:{{ item.stocked_percent }}%;"></div>
+                        {% if item.end %}
+                        <div class="progress-bar bg-danger" style="width:{{ item.ended_percent }}%"></div>
+                        {% endif %}
+                    </div>
+                </td>
+                <td>{{ item.comment }}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="col-12 text-right">
+        <a class="btn btn-warning btn-sm" href="{% url 'buy:buy-update' object.slug %}">구매내역 수정</a>
+    </div>
+</div>
+
+{% endblock buy_content %}

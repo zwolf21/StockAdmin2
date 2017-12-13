@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django_extensions',
     'import_export',
     'rest_framework',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'product',
     'buy',
     'core',
+
 ]
 
 MIDDLEWARE = [
