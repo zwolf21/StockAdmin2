@@ -64,7 +64,8 @@ class BuyItem(models.Model):
     def save(self, **kwargs):
         if not self.id:
             self.stockrecord_set.create(
-                )
+                amount=0
+            )
         return super(BuyItem, self).save()
 
 
@@ -72,7 +73,7 @@ class BuyItem(models.Model):
 class StockRecord(models.Model):
     buyitem = models.ForeignKey(BuyItem, on_delete=models.CASCADE)
     date = models.DateField('입고일자', blank=True, null=True)
-    amount = models.IntegerField('입고수량')
+    amount = models.IntegerField('입고수량', default=0)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
