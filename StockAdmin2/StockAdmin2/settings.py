@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     'import_export',
     'rest_framework',
 
+    'core',
     'product',
     'buy',
-    'core',
 
 ]
 

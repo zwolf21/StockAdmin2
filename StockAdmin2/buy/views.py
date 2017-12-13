@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
-from .forms import BuyItemFormSet
+from .forms import BuyItemInlineFormSet
 
 from core.filter import QueryFilter
 
@@ -40,7 +40,7 @@ class BuyUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(BuyUpdateView, self).get_context_data(**kwargs)
-        formset = BuyItemFormSet(self.request.POST or None, instance=self.get_object())
+        formset = BuyItemInlineFormSet(self.request.POST or None, instance=self.get_object())
         context['formset'] = formset
         return context
 

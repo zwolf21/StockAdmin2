@@ -21,6 +21,7 @@ from .views import HomeTemplateView
 urlpatterns = [
     path('', HomeTemplateView.as_view(), name='home'),
     path('admin/', admin.site.urls),
+    path('core/', include('core.urls', namespace='core')),
     path('product/', include('product.urls', namespace='product')),
     path('buy/', include('buy.urls', namespace='buy')),
 ]
