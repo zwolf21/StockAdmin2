@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Buy, BuyItem
+from .models import Buy, BuyItem, StockRecord
 
 
 class BuyItemInline(admin.TabularInline):
@@ -15,6 +15,11 @@ class BuyAdmin(admin.ModelAdmin):
     inlines = BuyItemInline,    
 
 
+class StockRecordInline(admin.TabularInline):
+    model = StockRecord
+    extra = 0
+
+
 @admin.register(BuyItem)
 class BuyItemAdmin(admin.ModelAdmin):
     list_display = 'buy', 'buyinfo', 'amount', 'isend',
@@ -22,3 +27,9 @@ class BuyItemAdmin(admin.ModelAdmin):
     list_search = 'buyinfo__product__name',
     search_fields = 'buyinfo__product__name',
     autocomplete_fields = 'buyinfo',
+    inlines = StockRecordInline,
+
+
+@admin.register(StockRecord)
+class StockRecordAdmin(admin.ModelAdmin):
+    list_display = 'buyitem', 'date', 'amount',

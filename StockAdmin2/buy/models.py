@@ -1,5 +1,7 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.dispatch import receiver
@@ -58,15 +60,15 @@ class BuyItem(models.Model):
         verbose_name_plural = '구매품목'
         unique_together = 'buy', 'buyinfo',
 
+    def __init__(self, *args, **kwargs):
+        super(BuyItem, self).__init__(*args, **kwargs)
+
     def __str__(self):
         return str(self.buyinfo)
 
-    def save(self, **kwargs):
-        if not self.id:
-            self.stockrecord_set.create(
-                amount=0
-            )
-        return super(BuyItem, self).save()
+    def get_stocked_sum(self):
+        aggset = self.stockrecord_set.aggregate(stocked=Sum('amount'))
+        return aggset['stocked'] or 0
 
 
 
@@ -85,11 +87,43 @@ class StockRecord(models.Model):
     def __str__(self):
         return str(self.buyitem)
 
+    def __init__(self, *args, **kwargs):
+        super(StockRecord, self).__init__(*args, **kwargs)
+        self.old_amount  = self.amount
+
+    def create_for_stock(self):
+        stockrecord_set = self.buyitem.stockrecord_set
+
+        if stockrecord_set.filter(amount=0).exists():
+            return
+        stocked_amount = self.buyitem.get_stocked_sum()
+        if self.buyitem.amount > stocked_amount:
+            stockrecord_set.create()
+
+    def clean(self):
+        stockrecord_set = self.buyitem.stockrecord_set
+        if self.id:
+            stocked_amount = self.buyitem.get_stocked_sum()
+            new_amount = stocked_amount - self.old_amount + self.amount
+            if new_amount > self.buyitem.amount:
+                raise ValidationError('입고수량이 구매수량을 초과 합니다')
+
+
 
 @receiver(post_save, sender=BuyItem)
-def post_save(sender, instance, created, *args, **kwargs):
+def buyitem_post_save(sender, instance, created, *args, **kwargs):
     if created:
-        pass
+        instance.stockrecord_set.create()
+
+
+@receiver(post_save, sender=StockRecord)
+def stockrecord_post_save(sender, instance, created, *args, **kwargs):
+    instance.create_for_stock()
+
+
+@receiver(post_delete, sender=StockRecord)
+def stockrecord_post_delete(sender, instance, *args, **kwargs):
+    instance.create_for_stock()
 
 
 
