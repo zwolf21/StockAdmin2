@@ -1,5 +1,6 @@
+from django.utils import timezone
 from django import forms
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 
 from .models import Buy, BuyItem
 
@@ -14,10 +15,9 @@ class BuyItemForm(forms.ModelForm):
             'buyinfo': forms.widgets.HiddenInput()
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super(BuyItemForm, self).__init__(*args, **kwargs)
-    #     BuyInfo = self.fields['buyinfo'].queryset.model
-    #     self.fields['buyinfo'].queryset = BuyInfo.objects.filter(active=True)
+
+class BuyDateForm(forms.Form):
+    date = forms.DateField(label='구매일자', initial=timezone.now(), required=False)
 
 
 BuyItemInlineFormSet = inlineformset_factory(Buy, BuyItem, BuyItemForm,
@@ -25,3 +25,15 @@ BuyItemInlineFormSet = inlineformset_factory(Buy, BuyItem, BuyItemForm,
     can_delete=True,
     can_order=True,
 )
+
+
+
+BuyItemCartFormSet = modelformset_factory(BuyItem, BuyItemForm,
+    # fields = ['buyinfo', 'amount', 'comment'],
+    extra = 1,
+    can_delete = True,
+    # widgets = {
+    #     'buyinfo': forms.widgets.HiddenInput(),
+    # }
+)
+

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
-from .forms import BuyItemInlineFormSet
+from .forms import BuyItemInlineFormSet, BuyItemCartFormSet, BuyDateForm
 
 from core.filter import QueryFilter
 
@@ -37,6 +37,7 @@ class BuyDetailView(DetailView):
 class BuyUpdateView(UpdateView):
     model = Buy
     fields = 'date',
+    success_url = '.'
 
     def get_context_data(self, **kwargs):
         context = super(BuyUpdateView, self).get_context_data(**kwargs)
@@ -50,6 +51,23 @@ class BuyUpdateView(UpdateView):
             formset.save()
         return super(BuyUpdateView, self).form_valid(form)
 
+
+class BuyItemCartFormView(FormView):
+    form_class = BuyDateForm
+    template_name = 'buy/buyitem_cart.html'
+    success_url = '.'
+
+    def get_context_data(self, **kwargs):
+        context = super(BuyItemCartFormView, self).get_context_data(**kwargs)
+        qs = BuyItem.objects.filter(buy__isnull=True)
+        context['formset'] = BuyItemCartFormSet(self.request.POST or None, queryset=qs)
+        return context
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        if formset.is_valid():
+            formset.save()
+        return super(BuyItemCartFormView, self).form_valid(form)
 
 
 

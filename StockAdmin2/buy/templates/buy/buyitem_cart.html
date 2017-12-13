@@ -4,19 +4,15 @@
     {{ formset.0.media }}
 {% endblock %}
 {% block buy_header %}
-<h4>구매내역 상세</h4>
+<h4>구매품목 입력</h4>
 {% endblock buy_header %}
 
 {% block buy_content %}
-<div class="col-12 my-3">
-    도매상: {{ form.instance.buyitem_set.first.buyinfo.market }}</br>
-    구매번호: {{ form.instance.slug }}
-</div>
-<hr>
+
 <div class="col-12">
     
-<form method="post" action=".">
-    {{ form }}
+
+<form method="post" action=".">  
     <table class="table-bordered tablesorter tablesorter-sortable">
         {% csrf_token %}
         <thead class="thead-default text-center">
@@ -25,8 +21,6 @@
                 <th>판매사</th>
                 <th>구매항목</th>
                 <th>구매수량</th>
-                <th>입고량</th>
-                <th>입고율</th>
                 <th>비고</th>
                 <th>삭제</th>
             </tr>
@@ -46,15 +40,6 @@
                 <td>{{ buyitem_form.buyinfo }}{{ buyitem_form.buyinfo_name }}</td>
                 {% endif %}
                 <td>{{ buyitem_form.amount }}</td>
-                <td>{{ buyitem_form.instance.get_stocked_sum }}</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" style="width:{{ item.stocked_percent }}%;"></div>
-                        {% if item.end %}
-                        <div class="progress-bar bg-danger" style="width:{{ item.ended_percent }}%"></div>
-                        {% endif %}
-                    </div>
-                </td>
                 <td>{{ buyitem_form.comment }}</td>
                 <td>{{ buyitem_form.DELETE }}</td>
             </tr>
@@ -68,7 +53,7 @@
 </form>
 </div>
 {% block extra_scrip %}
-{% url 'core:autocomplete:api-buyinfo-market' object.buyitem_set.first.buyinfo.market.id as autocomplete_url %}
+{% url 'core:autocomplete:api-buyinfo' as autocomplete_url %}
 {% include "autocomplete/buyinfo_autocomplete_script.html" with url=autocomplete_url %}
 {% endblock extra_scrip %}
 

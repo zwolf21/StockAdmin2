@@ -5,7 +5,7 @@ from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
 
 from utils.shortcuts import sequence_date_slugify
 
@@ -48,7 +48,7 @@ class Buy(models.Model):
 
 class BuyItem(models.Model):
     buy = models.ForeignKey(Buy, null=True, blank=True, on_delete=models.CASCADE)
-    buyinfo = models.ForeignKey('product.BuyInfo', on_delete=models.PROTECT)
+    buyinfo = models.ForeignKey('product.BuyInfo', on_delete=models.CASCADE)
     amount = models.IntegerField('구매수량')
     comment = models.CharField('비고', max_length=50, blank=True)
     isend = models.BooleanField('구매종결', default=False)
@@ -93,7 +93,6 @@ class StockRecord(models.Model):
 
     def create_for_stock(self):
         stockrecord_set = self.buyitem.stockrecord_set
-
         if stockrecord_set.filter(amount=0).exists():
             return
         stocked_amount = self.buyitem.get_stocked_sum()
@@ -120,10 +119,6 @@ def buyitem_post_save(sender, instance, created, *args, **kwargs):
 def stockrecord_post_save(sender, instance, created, *args, **kwargs):
     instance.create_for_stock()
 
-
-@receiver(post_delete, sender=StockRecord)
-def stockrecord_post_delete(sender, instance, *args, **kwargs):
-    instance.create_for_stock()
 
 
 
