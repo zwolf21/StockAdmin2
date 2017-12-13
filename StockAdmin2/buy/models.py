@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save, post_delete
 
 from utils.shortcuts import sequence_date_slugify
 
@@ -59,11 +61,17 @@ class BuyItem(models.Model):
     def __str__(self):
         return str(self.buyinfo)
 
+    def save(self, **kwargs):
+        if not self.id:
+            self.stockrecord_set.create(
+                )
+        return super(BuyItem, self).save()
+
 
 
 class StockRecord(models.Model):
     buyitem = models.ForeignKey(BuyItem, on_delete=models.CASCADE)
-    date = models.DateField('입고일자', blank=True, default=timezone.now)
+    date = models.DateField('입고일자', blank=True, null=True)
     amount = models.IntegerField('입고수량')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -71,11 +79,16 @@ class StockRecord(models.Model):
     class Meta:
         verbose_name_plural = '입고기록'
         verbose_name = '입고기록'
-        ordering = '-buyitemstock__created',
+        ordering = '-buyitem__created',
 
     def __str__(self):
         return str(self.buyitem)
 
+
+@receiver(post_save, sender=BuyItem)
+def post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        pass
 
 
 
