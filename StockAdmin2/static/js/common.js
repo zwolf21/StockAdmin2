@@ -5,9 +5,14 @@ $(function(){
 
     // table sorter global
     $(".tablesorter-sortable").tablesorter({
+        widthFixed: true
+    })
+
+    $(".tablesorter-sortable-zebra").tablesorter({
         widgets: ['zebra'],
         widthFixed: true
     })
+
 
     //date picker global
     $.datepicker.setDefaults({
@@ -52,5 +57,19 @@ $(function(){
         $(this).parents('form').submit()
     })
 
-}) 
+})
+
+function checkSync(master, slave) {
+    $(master).click(function(e){
+        var checked = $(this).is(':checked')
+        $(slave).each(function(){
+            $(this).prop('checked',checked);
+        });
+    })        
+}
+
+
+
+
+
     

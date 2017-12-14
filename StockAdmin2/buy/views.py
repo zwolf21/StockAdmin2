@@ -1,10 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
-from .forms import BuyItemInlineFormSet, BuyItemCartFormSet, BuyDateForm
-
+from .forms import BuyForm, BuyItemInlineFormSet, BuyItemCartFormSet, BuyDateForm
+from .services import buyitem_formset_operation, rollback_to_cart
 from core.filter import QueryFilter
+
 
 
 class TestView(ListView):
@@ -32,11 +35,17 @@ class BuyListView(ListView):
 
 class BuyDetailView(DetailView):
     model = Buy
+    fields = 'commiter',
+
+    def get_context_data(self, **kwargs):
+        context = super(BuyDetailView, self).get_context_data(**kwargs)
+        context['form'] = BuyForm()
+        return context
 
 
 class BuyUpdateView(UpdateView):
     model = Buy
-    fields = 'date',
+    fields = 'date', 'commiter',
     success_url = '.'
 
     def get_context_data(self, **kwargs):
@@ -49,13 +58,25 @@ class BuyUpdateView(UpdateView):
         formset = self.get_context_data()['formset']
         if formset.is_valid():
             formset.save()
+            if rollback_to_cart(formset):
+                return HttpResponseRedirect(reverse('buy:buy-cart'))
         return super(BuyUpdateView, self).form_valid(form)
+
+
+class BuyConfirmView(UpdateView):
+    model = Buy
+    fields = 'commiter',
+
+
+class BuyDeleteView(DeleteView):
+    model = Buy
+    success_url = reverse_lazy('buy:buy-list')
 
 
 class BuyItemCartFormView(FormView):
     form_class = BuyDateForm
     template_name = 'buy/buyitem_cart.html'
-    success_url = '.'
+    success_url = reverse_lazy('buy:buy-cart')
 
     def get_context_data(self, **kwargs):
         context = super(BuyItemCartFormView, self).get_context_data(**kwargs)
@@ -67,10 +88,7 @@ class BuyItemCartFormView(FormView):
         formset = self.get_context_data()['formset']
         if formset.is_valid():
             formset.save()
+            buyitem_formset_operation(formset, form.cleaned_data['date'])
         return super(BuyItemCartFormView, self).form_valid(form)
-
-
-
-
 
 

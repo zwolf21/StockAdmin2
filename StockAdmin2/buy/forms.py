@@ -1,8 +1,16 @@
 from django.utils import timezone
 from django import forms
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
 
 from .models import Buy, BuyItem
+
+
+class BuyForm(forms.ModelForm):
+
+    class Meta:
+        model = Buy
+        fields = 'commiter',
+
 
 
 class BuyItemForm(forms.ModelForm):
@@ -29,11 +37,7 @@ BuyItemInlineFormSet = inlineformset_factory(Buy, BuyItem, BuyItemForm,
 
 
 BuyItemCartFormSet = modelformset_factory(BuyItem, BuyItemForm,
-    # fields = ['buyinfo', 'amount', 'comment'],
     extra = 1,
     can_delete = True,
-    # widgets = {
-    #     'buyinfo': forms.widgets.HiddenInput(),
-    # }
 )
 

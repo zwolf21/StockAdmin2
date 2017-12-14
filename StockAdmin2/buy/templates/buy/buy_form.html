@@ -4,7 +4,7 @@
     {{ formset.0.media }}
 {% endblock %}
 {% block buy_header %}
-<h4>구매내역 상세</h4>
+<h4>구매내역 수정</h4>
 {% endblock buy_header %}
 
 {% block buy_content %}
@@ -16,19 +16,18 @@
 <div class="col-12">
     
 <form method="post" action=".">
+    <div hidden>
     {{ form }}
-    <table class="table-bordered tablesorter tablesorter-sortable">
+    </div>
+    <table class="table-bordered tablesorter tablesorter-sortable-zebra">
         {% csrf_token %}
         <thead class="thead-default text-center">
             <tr>
-                <th>연번</th>
+                <th><input type="checkbox" class="check-master"></th>
                 <th>판매사</th>
                 <th>구매항목</th>
                 <th>구매수량</th>
-                <th>입고량</th>
-                <th>입고율</th>
                 <th>비고</th>
-                <th>삭제</th>
             </tr>
         </thead>
         {{ formset.management_form }}
@@ -36,7 +35,11 @@
             {% for buyitem_form in formset %}
             {% for hidden in buyitem_form.hidden_fields %} {{ hidden }} {% endfor %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
+                {% if forloop.last %}
+                <td></td>
+                {% else %}
+                <td class="text-center">{{ buyitem_form.selected }}</td>
+                {% endif %}
                 <td>{{ buyitem_form.instance.buyinfo.product.company }} </td>
                 {% if not forloop.last %}
                 <td>
@@ -46,29 +49,25 @@
                 <td>{{ buyitem_form.buyinfo }}{{ buyitem_form.buyinfo_name }}</td>
                 {% endif %}
                 <td>{{ buyitem_form.amount }}</td>
-                <td>{{ buyitem_form.instance.get_stocked_sum }}</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" style="width:{{ item.stocked_percent }}%;"></div>
-                        {% if item.end %}
-                        <div class="progress-bar bg-danger" style="width:{{ item.ended_percent }}%"></div>
-                        {% endif %}
-                    </div>
-                </td>
                 <td>{{ buyitem_form.comment }}</td>
-                <td>{{ buyitem_form.DELETE }}</td>
+                <td hidden>{{ buyitem_form.DELETE }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="col-12 text-right">
         <a class="btn btn-info btn-sm" href="{{ object.get_absolute_url }}">돌아가기</a>
-        <button class="btn btn-success btn-sm">저장</button>
+        <button class="btn btn-success btn-sm">저장/선택항목되돌리기</button>
     </div>
 </form>
 </div>
 {% block extra_scrip %}
-{% url 'core:autocomplete:api-buyinfo-market' object.buyitem_set.first.buyinfo.market.id as autocomplete_url %}
+{{ block.super }}
+{% if object.buyitem_set.exists %}
+    {% url 'core:autocomplete:api-buyinfo-market' object.buyitem_set.first.buyinfo.market.id as autocomplete_url %}
+{% else %}
+    {% url 'core:autocomplete:api-buyinfo' as autocomplete_url %}
+{% endif %}
 {% include "autocomplete/buyinfo_autocomplete_script.html" with url=autocomplete_url %}
 {% endblock extra_scrip %}
 

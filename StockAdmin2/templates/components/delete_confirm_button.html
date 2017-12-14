@@ -1,0 +1,24 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#{{ modal_id }}">
+  {{ button_name|default:"삭제" }}
+</button>
+
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">삭제확인</h5>
+      </div>
+      <div class="modal-body text-center">
+        {{ confirm_message|default:"정말로 삭제 하시겠습니까?" }}
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{{ action }}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-sm">삭제</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">취소</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

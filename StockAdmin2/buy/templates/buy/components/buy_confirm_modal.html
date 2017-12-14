@@ -1,0 +1,25 @@
+<!-- Button trigger modal -->
+
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#btn-buy-confirm">
+  발주승인
+</button>
+
+<div class="modal fade" id="btn-buy-confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">승인확인</h5>
+      </div>
+      <div class="modal-body text-center">
+        {{ object.buyitem_set.count }}건 을 승인하시겠습니까?
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{% url 'buy:buy-confirm' object.slug %}">
+          {% csrf_token %}
+          승인자:{{ form.commiter }}
+          <button type="submit" class="btn btn-success btn-sm">승인</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

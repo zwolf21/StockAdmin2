@@ -22,6 +22,10 @@ table.tablesorter input[type=number] {
     text-align: right;
 }
 
+/*tr:hover {
+    background-color: #ffff99 !important;
+}
+*/
 td.amount {
     width: 100px;
 }
@@ -29,3 +33,31 @@ td.amount {
 .product-info th {
     text-align: center;
 }
+
+table.stock-table thead {
+    text-align: center;
+}
+table.stock-table td {
+    height: 20px;
+}
+.table-condensed {
+  font-size: 12px;
+}
+.table-condensed thead {
+    text-align: center;
+    background-color: paleturquoise ;
+}
+.table-condensed tr td:first-child {
+    width: 3%;
+}
+.table-condensed td{
+    height: 15px;
+    padding: 1px;
+}
+.table-condensed input[type=text], .table-condensed  input[type=number], .table-condensed  select {
+    width: 100%;
+}
+.table-condensed input[type=number] {
+    text-align: right;
+}
+

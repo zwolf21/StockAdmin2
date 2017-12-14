@@ -9,4 +9,20 @@
     {% block buy_content %}{% endblock buy_content %}
     </div>
 </div>
+
+{% block extra_scrip %}
+<script type="text/javascript">
+$(function(){
+
+    $('input[name$=amount]').change(function(event){
+        tr = $(this).parents('tr')
+        var chk_delelete = tr.find('input[name*=DELETE]')
+        var checked = $(this).val() == 0 || $(this).val() === ''
+        chk_delelete.prop('checked', checked)
+    })
+    checkSync('.check-master', 'input[name*=selected]')
+
+})
+</script>
+{% endblock extra_scrip %}
 {% endblock content %}
