@@ -116,6 +116,8 @@ def stockrecord_stocked_view(request):
     if request.method == "POST":
         formset = StockRecordFormSet(request.POST or None)
         stockrecord_formset_operation(formset)
+        if formset.is_valid(): # 뒤에 호출하여야 DELETE가 먹힘
+            formset.save()
         return redirect('.')
     else:
         qs = StockRecord.objects.filter(amount__gt=0)

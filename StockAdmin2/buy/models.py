@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Sum
+from django.db.models import *
 from django.urls import reverse
 from django.utils import timezone
 
@@ -44,6 +44,16 @@ class Buy(models.Model):
             return "{} 등 {}건".format(fistitem, count)
         return "내역없음"
 
+    def get_complete_rate(self):
+        total_buyitem_count = self.buyitem_set.count()
+        if total_buyitem_count > 0:
+            annoset = self.buyitem_set.annotate(stocked_amount_sum=Sum('stockrecord__amount'))
+            completed_set = annoset.filter(Q(stocked_amount_sum=F('amount'))|Q(isend=True) )
+            return completed_set.count() / total_buyitem_count
+        return 0
+
+    def has_stockset(self):
+        return StockRecord.objects.filter(amount__gt=0, buyitem__buy=self).exists()
 
 
 class BuyItem(models.Model):

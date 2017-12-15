@@ -18,8 +18,10 @@
         {% csrf_token %}
         {{ formset.management_form }}
         <div class="form-group text-right">
+            
             <label>입고일자지정:</label>
             {% render_field form.date class="form-control-sm datepicker" readonly="true" tabindex="-1" %}
+            <a class="btn btn-warning btn-sm ml-3" href="{% url 'buy:stock-stocked' %}">입고내역<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
         </div>
         <table class="table-bordered tablesorter tablesorter-sortable grid-table">
             <thead class="text-center thead-light">
@@ -57,7 +59,7 @@
             </tbody>
         </table>
         <div class="form-group text-right">
-            <button class="btn btn-success">입고저장</button>
+            <button class="btn btn-success btn-sm">입고저장</button>
         </div>
     </form>
 </div>

@@ -39,14 +39,18 @@ def buyitem_formset_operation(formset, buy_date):
 
 
 def stockrecord_formset_operation(formset, stock_date=None):
+
     for stockrecord_form in formset:
         if stockrecord_form.is_valid():
+            # print(stockrecord_form.cleaned_data['DELETE'])
             buyitem = stockrecord_form.instance.buyitem
             if stockrecord_form.cleaned_data['amount'] > 0 and stock_date:
                 stockrecord_form.instance.date = stock_date
             elif stockrecord_form.cleaned_data['end'] == True:
                 buyitem.isend = True
-                buyitem.save()                
+                buyitem.save()
+            # if stockrecord_form.cleaned_data['DELETE'] == True:
+            #     stockrecord_form.save()
             stockrecord_form.save()
 
 
