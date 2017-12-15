@@ -94,7 +94,7 @@ class BuyItem(models.Model):
     def iscompleted(self):
         return self.get_stock_status() in ['완료', '종결']
 
-    def reload_zero_stockrecord(self, now_deleting=False):
+    def reload_zero_stockrecord(self):
         zeroset = self.stockrecord_set.filter(amount=0)
 
         if self.iscompleted:
@@ -103,9 +103,8 @@ class BuyItem(models.Model):
         else:
             if zeroset.exists():
                 if zeroset.count() > 1:
-                    if not now_deleting:
-                        zeroset.delete()
-                        self.stockrecord_set.create()
+                    zeroset.delete()
+                    self.stockrecord_set.create()
             else:
                 self.stockrecord_set.create()
 
