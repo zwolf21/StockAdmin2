@@ -5,32 +5,14 @@ from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
 from .forms import BuyForm, BuyItemInlineFormSet, BuyItemCartFormSet, DateForm, StockRecordFormSet
-from .services import buyitem_formset_operation, rollback_to_cart
+from .services import buyitem_formset_operation, rollback_to_cart, stockrecord_formset_operation
 from core.filter import QueryFilter
 
 
 
-class TestView(ListView):
-    model = BuyItem
-    template_name = 'buy/test.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(TestView, self).get_context_data(**kwargs)
-        qf = QueryFilter(self.request)
-        context['date_filter_form'] = qf.get_date_filter_form()
-        context['search_filter_form'] = qf.get_search_filter_form()
-        return context
-
-    def get_queryset(self):
-        qs = super(TestView, self).get_queryset()
-        qf = QueryFilter(self.request, qs)
-        qs = qf.filter_by_date('buy__date')
-        qs = qf.filter_by_search(queryset=qs)
-        return qs
-
-
 class BuyListView(ListView):
     model = Buy
+
 
 
 class BuyDetailView(DetailView):
@@ -41,6 +23,7 @@ class BuyDetailView(DetailView):
         context = super(BuyDetailView, self).get_context_data(**kwargs)
         context['form'] = BuyForm()
         return context
+
 
 
 class BuyUpdateView(UpdateView):
@@ -63,14 +46,17 @@ class BuyUpdateView(UpdateView):
         return super(BuyUpdateView, self).form_valid(form)
 
 
+
 class BuyConfirmView(UpdateView):
     model = Buy
     fields = 'commiter',
 
 
+
 class BuyDeleteView(DeleteView):
     model = Buy
     success_url = reverse_lazy('buy:buy-list')
+
 
 
 class BuyItemCartFormView(FormView):
@@ -105,11 +91,13 @@ class StockRecordStockingView(FormView):
         else:
             qs = StockRecord.objects.filter(
                 buyitem__buy__commiter__isnull=False,
-                amount=0
+                amount=0,
+                buyitem__isend=False
             )
             qf = QueryFilter(self.request, queryset=qs)
-            context['date_filter_form'] = qf.get_date_filter_form()
-            context['search_filter_form'] = qf.get_search_filter_form()
+            qf.set_filter_form_to_context(context,
+                date='date_filter_form', search='search_filter_form'
+            )
             qs = qf.filter_by_date('buyitem__buy__date')
             qs = qf.filter_by_search(app_name='StockRecord-stocking', queryset=qs)
             context['formset'] = StockRecordFormSet(queryset=qs)
@@ -118,13 +106,28 @@ class StockRecordStockingView(FormView):
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
         stock_date = form.cleaned_data['date']
-        for stockrecord_form in formset:
-            if stockrecord_form.is_valid():
-                if stockrecord_form.cleaned_data['amount'] > 0:
-                    stockrecord_form.instance.date = stock_date
-                    stockrecord_form.save()
-
+        stockrecord_formset_operation(formset, stock_date)
         return super(StockRecordStockingView, self).form_valid(form)
+
+
+
+def stockrecord_stocked_view(request):
+    context = {}
+    if request.method == "POST":
+        formset = StockRecordFormSet(request.POST or None)
+        stockrecord_formset_operation(formset)
+        return redirect('.')
+    else:
+        qs = StockRecord.objects.filter(amount__gt=0)
+        qf = QueryFilter(request, queryset=qs)
+        qf.set_filter_form_to_context(context,
+            date='date_filter_form', search='search_filter_form'
+        )
+        qs = qf.filter_by_date('date')
+        qs = qf.filter_by_search(app_name='StockRecord-stocked', queryset=qs)
+        context['formset'] = StockRecordFormSet(queryset=qs)
+        return render(request, 'buy/stocked_form.html', context)
+
 
 
 

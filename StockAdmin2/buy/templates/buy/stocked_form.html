@@ -1,0 +1,63 @@
+{% extends "buy/buy_base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block buy_header %}
+<h4>입고내역</h4>
+<div class="col-12">
+    {% url 'buy:stock-stocked' as stocked_url %}
+    {% include "buy/components/filter_form.html" with url=stocked_url %}
+</div>
+{% endblock buy_header %}
+
+
+{% block buy_content %}
+<div class="col-12">
+    
+<form class="form" method="post" action=".">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <table class="table-bordered tablesorter tablesorter-sortable">
+        <thead class="text-center">
+            <tr>
+                <th>구매번호</th>
+                <th>입고일자</th>
+                <th>거래처</th>
+                <th>판매사</th>
+                <th>입고품목</th>
+                <th>구매수량</th>
+                <th>미입고수량</th>
+                <th>입고수량</th>
+                <th>입고상태</th>
+                <th>입고취소</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+            <tr>
+                <td class="text-center">{{ form.instance.buyitem.buy.slug }}</td>
+                <td class="text-center">{{ form.instance.date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ form.instance.buyitem.buyinfo.market.name }}</td>
+                <td>{{ form.instance.buyitem.buyinfo.product.company }}</td>
+                <td>{{ form.buyitem }}{{ form.instance.buyitem.buyinfo.product.name }}</td>
+                <td class="text-right">{{ form.instance.buyitem.amount }}</td>
+                <td class="text-right">{{ form.instance.buyitem.get_incompleted_stock }}</td>
+                <td class="amount text-right">{{ form.amount }}</td>
+                <td class="text-center">{{ form.instance.buyitem.get_stock_status }}</td>
+                <td class="text-center">{{ form.DELETE }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="form-group text-right">
+        <p>총 입고금액: {{ total_price|intcomma }}</p>
+        <button class="btn btn-success">입고내역저장</button>
+    </div>
+</form>
+</div>
+
+{% endblock buy_content %}

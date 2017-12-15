@@ -15,6 +15,10 @@ class QueryFilter(object):
         self.request = request
         self.queryset = queryset
 
+    def set_filter_form_to_context(self, context, **form_kinds):
+        for kind, form_name in form_kinds.items():
+            context[form_name] = self.form_classes.get(kind)
+        return context
 
     def get_date_filter_form(self):
         Form = self.form_classes['date']

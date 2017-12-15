@@ -35,5 +35,19 @@ def rollback_to_cart(formset):
 
 def buyitem_formset_operation(formset, buy_date):
     selected_set = _get_selected_queryset_from_formset(formset)
-    print('selected_set:', selected_set)
     _generate_buy_groupby_by_market(selected_set, buy_date)
+
+
+def stockrecord_formset_operation(formset, stock_date=None):
+    for stockrecord_form in formset:
+        if stockrecord_form.is_valid():
+            buyitem = stockrecord_form.instance.buyitem
+            if stockrecord_form.cleaned_data['amount'] > 0 and stock_date:
+                stockrecord_form.instance.date = stock_date
+            elif stockrecord_form.cleaned_data['end'] == True:
+                buyitem.isend = True
+                buyitem.save()                
+            stockrecord_form.save()
+
+
+

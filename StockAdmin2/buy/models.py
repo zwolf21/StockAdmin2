@@ -4,8 +4,8 @@ from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
-from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
+
+from .managers import StockRecordManager
 
 from utils.shortcuts import sequence_date_slugify
 
@@ -66,6 +66,10 @@ class BuyItem(models.Model):
     def __str__(self):
         return str(self.buyinfo)
 
+    def save(self, **kwargs):
+        super(BuyItem, self).save(**kwargs)
+        self.reload_zero_stockrecord()            
+
     def get_stocked_sum(self):
         aggset = self.stockrecord_set.aggregate(stocked=Sum('amount'))
         return aggset['stocked'] or 0
@@ -78,6 +82,33 @@ class BuyItem(models.Model):
         pkg_amount = self.buyinfo.product.pkg_amount or 1
         return incompleted_stock//pkg_amount
 
+    def get_stock_status(self):
+        if self.isend == True:
+            return '종결'
+        elif self.get_incompleted_stock() == 0:
+            return '완료'
+        else:
+            return '입고중'
+
+    @property
+    def iscompleted(self):
+        return self.get_stock_status() in ['완료', '종결']
+
+    def reload_zero_stockrecord(self, now_deleting=False):
+        zeroset = self.stockrecord_set.filter(amount=0)
+
+        if self.iscompleted:
+            if zeroset.exists():
+                zeroset.delete()
+        else:
+            if zeroset.exists():
+                if zeroset.count() > 1:
+                    if not now_deleting:
+                        zeroset.delete()
+                        self.stockrecord_set.create()
+            else:
+                self.stockrecord_set.create()
+
 
 
 class StockRecord(models.Model):
@@ -87,25 +118,28 @@ class StockRecord(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    objects = StockRecordManager()
+
     class Meta:
         verbose_name_plural = '입고기록'
         verbose_name = '입고기록'
         ordering = '-buyitem__created',
 
-    def __str__(self):
-        return str(self.buyitem)
-
     def __init__(self, *args, **kwargs):
         super(StockRecord, self).__init__(*args, **kwargs)
         self.old_amount  = self.amount
+        
+    def __str__(self):
+        return str(self.buyitem)
 
-    def create_for_stock(self):
-        stockrecord_set = self.buyitem.stockrecord_set
-        if stockrecord_set.filter(amount=0).exists():
-            return
-        stocked_amount = self.buyitem.get_stocked_sum()
-        if self.buyitem.amount > stocked_amount:
-            stockrecord_set.create()
+    def save(self, **kwargs):
+        super(StockRecord, self).save(**kwargs)
+        self.buyitem.reload_zero_stockrecord()
+
+    def delete(self):
+        buyitem = self.buyitem
+        super(StockRecord, self).delete()
+        buyitem.reload_zero_stockrecord()
 
     def clean(self):
         stockrecord_set = self.buyitem.stockrecord_set
@@ -117,15 +151,7 @@ class StockRecord(models.Model):
 
 
 
-@receiver(post_save, sender=BuyItem)
-def buyitem_post_save(sender, instance, created, *args, **kwargs):
-    if created:
-        instance.stockrecord_set.create()
 
-
-@receiver(post_save, sender=StockRecord)
-def stockrecord_post_save(sender, instance, created, *args, **kwargs):
-    instance.create_for_stock()
 
 
 

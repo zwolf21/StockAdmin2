@@ -5,7 +5,6 @@ from .views import *
 
 app_name = 'buy'
 urlpatterns = [
-    # path('test/', TestView.as_view(), name='test'),
     path('', BuyListView.as_view(), name='buy-list'),
     path('cart/', BuyItemCartFormView.as_view(), name='buy-cart'),
     path('<slug:slug>/', BuyDetailView.as_view(), name='buy-detail'),
@@ -14,4 +13,5 @@ urlpatterns = [
     path('confirm/<slug:slug>/', BuyConfirmView.as_view(), name='buy-confirm'),
 
     path('stockrecord/stocking/', StockRecordStockingView.as_view(), name='stock-stocking'),
+    path('stockrecord/stocked/', stockrecord_stocked_view, name='stock-stocked'),
 ]
