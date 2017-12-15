@@ -1,0 +1,102 @@
+{% extends "buy/buy_base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block buy_header %}
+<h4>입고잡기</h4>
+<div class="col-12">
+    {% url 'buy:stock-stocking' as stocking_url %}
+    {% include "buy/components/filter_form.html" with url=stocking_url %}
+</div>
+{% endblock buy_header %}
+
+
+{% block buy_content %}
+<div class="col-12">
+    <form method="post" action=".">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="form-group text-right">
+            <label>입고일자지정:</label>
+            {% render_field form.date class="form-control-sm datepicker" readonly="true" tabindex="-1" %}
+        </div>
+        <table class="table-bordered tablesorter tablesorter-sortable grid-table">
+            <thead class="text-center thead-light">
+                <tr>
+                    <th>구매번호</th>
+                    <th>거래처</th>
+                    <th>판매사</th>
+                    <th>항목</th>
+                    <th>입고</th>
+                    <th>미입고</th>
+                    <th>입고됨</th>
+                    <th>구매량</th>
+                    <th>종결</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in formset %}
+                    {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+                <tr>
+                    <td class="text-center">{{ form.instance.buyitem.buy.slug }}</td>
+                    <td class="text-center">{{ form.instance.buyitem.buyinfo.market }}</td>
+                    <td>{{ form.instance.buyitem.buyinfo.product.company }}</td>
+                    <td>{{ form.buyitem }}{{ form.instance.buyitem.buyinfo.product }}</td>
+                    {% with amount_step=form.instance.buyitem.buyinfo.product.pkg_amount amount_rest=form.instance.buyitem.get_incompleted_stock %}
+                    <td class="amount">{% render_field form.amount step=amount_step min=0 max=amount_rest %}</td>
+                    {% endwith %}
+                    <td class="text-right">
+                        {{ form.instance.buyitem.get_incompleted_stock }}({{ form.instance.buyitem.get_incompleted_stock_by_pkg }})
+                    </td>
+                    <td class="text-right">{{ form.instance.buyitem.get_stocked_sum }}</td>
+                    <td class="text-right">{{ form.instance.buyitem.amount }}</td>
+                    <td class="text-center">{{ form.end|attr:"tabindex:-1" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="form-group text-right">
+            <button class="btn btn-success">입고저장</button>
+        </div>
+    </form>
+</div>
+{% block extra_scrip %}
+<script>
+$(function(){
+    $('input[name*=amount]').keydown(function(event){
+        var kc = event.keyCode
+        var step = parseInt($(this).attr('step'))
+        var max = parseInt($(this).attr('max'))
+        var cur = parseInt($(this).val()) || 0
+        if (kc == 32) {
+            $(this).val(max)
+        }
+        else if (kc == 37) {
+            var amount = cur-step
+            if (amount >= 0) {
+                $(this).val(amount)
+            }
+            return false
+        }else if (kc == 39) {
+            var amount = cur+step
+            if (amount <= max) {
+                $(this).val(amount)
+            }
+            return false
+        }
+
+        if ($(this).val() == "") {
+            $(this).val(0)
+        }
+    })
+})
+</script>
+{% endblock extra_scrip %}
+
+{% endblock buy_content %}
+
+
+
+
+

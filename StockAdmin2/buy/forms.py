@@ -2,7 +2,7 @@ from django.utils import timezone
 from django import forms
 from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
 
-from .models import Buy, BuyItem
+from .models import Buy, BuyItem, StockRecord
 
 
 class BuyForm(forms.ModelForm):
@@ -24,7 +24,7 @@ class BuyItemForm(forms.ModelForm):
         }
 
 
-class BuyDateForm(forms.Form):
+class DateForm(forms.Form):
     date = forms.DateField(label='구매일자', initial=timezone.now(), required=False)
 
 
@@ -40,4 +40,32 @@ BuyItemCartFormSet = modelformset_factory(BuyItem, BuyItemForm,
     extra = 1,
     can_delete = True,
 )
+
+
+class StockRecordForm(forms.ModelForm):
+    end = forms.BooleanField(initial=False, required=False)
+
+    class Meta:
+        model = StockRecord
+        fields = 'buyitem', 'date', 'amount',
+        widgets = {
+            'buyitem': forms.widgets.HiddenInput()
+        }
+
+
+StockRecordFormSet = modelformset_factory(StockRecord, StockRecordForm,
+    extra=0,
+    can_delete=True
+)
+
+
+
+
+
+
+
+
+
+
+
 

@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
-from .forms import BuyForm, BuyItemInlineFormSet, BuyItemCartFormSet, BuyDateForm
+from .forms import BuyForm, BuyItemInlineFormSet, BuyItemCartFormSet, DateForm, StockRecordFormSet
 from .services import buyitem_formset_operation, rollback_to_cart
 from core.filter import QueryFilter
 
@@ -74,7 +74,7 @@ class BuyDeleteView(DeleteView):
 
 
 class BuyItemCartFormView(FormView):
-    form_class = BuyDateForm
+    form_class = DateForm
     template_name = 'buy/buyitem_cart.html'
     success_url = reverse_lazy('buy:buy-cart')
 
@@ -90,5 +90,51 @@ class BuyItemCartFormView(FormView):
             formset.save()
             buyitem_formset_operation(formset, form.cleaned_data['date'])
         return super(BuyItemCartFormView, self).form_valid(form)
+
+
+
+class StockRecordStockingView(FormView):
+    form_class = DateForm
+    success_url = '.'
+    template_name = 'buy/stocking_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(StockRecordStockingView, self).get_context_data(**kwargs)
+        if self.request.method == "POST":
+            context['formset'] = StockRecordFormSet(self.request.POST or None)
+        else:
+            qs = StockRecord.objects.filter(
+                buyitem__buy__commiter__isnull=False,
+                amount=0
+            )
+            qf = QueryFilter(self.request, queryset=qs)
+            context['date_filter_form'] = qf.get_date_filter_form()
+            context['search_filter_form'] = qf.get_search_filter_form()
+            qs = qf.filter_by_date('buyitem__buy__date')
+            qs = qf.filter_by_search(app_name='StockRecord-stocking', queryset=qs)
+            context['formset'] = StockRecordFormSet(queryset=qs)
+        return context
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        stock_date = form.cleaned_data['date']
+        for stockrecord_form in formset:
+            if stockrecord_form.is_valid():
+                if stockrecord_form.cleaned_data['amount'] > 0:
+                    stockrecord_form.instance.date = stock_date
+                    stockrecord_form.save()
+
+        return super(StockRecordStockingView, self).form_valid(form)
+
+
+
+
+
+
+
+
+
+
+
 
 

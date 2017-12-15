@@ -70,6 +70,14 @@ class BuyItem(models.Model):
         aggset = self.stockrecord_set.aggregate(stocked=Sum('amount'))
         return aggset['stocked'] or 0
 
+    def get_incompleted_stock(self):
+        return self.amount - self.get_stocked_sum()
+
+    def get_incompleted_stock_by_pkg(self):
+        incompleted_stock = self.get_incompleted_stock()
+        pkg_amount = self.buyinfo.product.pkg_amount or 1
+        return incompleted_stock//pkg_amount
+
 
 
 class StockRecord(models.Model):

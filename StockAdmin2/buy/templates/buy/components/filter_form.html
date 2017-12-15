@@ -1,0 +1,18 @@
+{% load widget_tweaks %}
+
+<form class="form-inline" method="get" action="{{ url }}">
+    <div class="form-group mr-2">
+        조회:        
+    </div>
+    <div class="form-group">
+        {% render_field date_filter_form.start_date class="form-control-sm datepicker datepicker-start" readonly="true" tabindex=-1 %}~
+    </div>
+    <div class="form-group mr-2">
+        {% render_field date_filter_form.end_date class="form-control-sm datepicker datepicker-end" readonly="true" tabindex=-1 %}
+    </div>
+    <div class="form-group">
+        {% render_field search_filter_form.search class="form-control-sm" placeholder="검색어" %}
+    </div>
+    <button class="btn btn-info btn-sm" type="submit" tabindex="-1" hidden>조회</button>
+</form>
+
