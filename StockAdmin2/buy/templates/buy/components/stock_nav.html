@@ -1,0 +1,23 @@
+{% url 'buy:stock-agg' 'Market' as market_url %}
+{% url 'buy:stock-agg' 'Product' as product_url %}
+{% url 'buy:stock-agg' 'BuyInfo' as buyinfo_url %}
+{% url 'buy:stock-agg' 'StockRecord' as stockrecord_url %}
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link {% if request.path == stockrecord_url %}active{% endif %} " href="{{ stockrecord_url }}?{{ request.GET.urlencode }}" >입고내역</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if request.path == product_url %}active{% endif %} " href="{{ product_url }}?{{ request.GET.urlencode }}">제품별집계</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if request.path == buyinfo_url %}active{% endif %} " href="{{ buyinfo_url }}?{{ request.GET.urlencode }}">제품(구매정보)별집계</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if request.path == market_url %}active{% endif %} " href="{{ market_url }}?{{ request.GET.urlencode }}">거래처별집계</a>
+  </li>
+</ul>
+<script>
+$(function(){
+  redirectFormActionOnClick('#filter-form', '[href={{ request.path }}]', "{{ request.path }}")
+})
+</script>

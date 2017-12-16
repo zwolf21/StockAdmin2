@@ -62,6 +62,8 @@ class BuyInfo(BuyInfoMixin, models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    objects = BuyInfoManager()
+
     class Meta:
         verbose_name = '구매정보'
         verbose_name_plural = '구매정보'

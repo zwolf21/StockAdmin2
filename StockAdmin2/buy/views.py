@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.shortcuts import render, redirect, reverse
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -78,6 +80,40 @@ class BuyItemCartFormView(FormView):
         return super(BuyItemCartFormView, self).form_valid(form)
 
 
+from django.apps import apps
+class StockRecordAggregateView(ListView):
+    model = StockRecord
+    template_name = 'buy/stocked_agg.html'
+
+    def get_context_data(self, **kwargs):
+        pprint(dir(self.request.GET))
+        print(self.request.GET.urlencode())
+        context = super(StockRecordAggregateView, self).get_context_data(**kwargs)
+        agg_type = self.kwargs.get('type')
+        app_model_set = {
+            'Market': 'product', 'Product': 'product',
+            'BuyInfo': 'product', 'StockRecord': 'buy'
+        }
+        if agg_type in app_model_set:
+            app_name = app_model_set.get(agg_type)
+            model = apps.get_model(app_name, agg_type)
+            # qs, aggset = model.objects.all().annotate_stockrecord(aggset=True)
+            qs = model.objects.all()
+            filter_name='{}-StockRecord'.format(agg_type)
+            qf = QueryFilter(self.request, queryset=qs, app_name=filter_name)
+            qf.set_filter_form_to_context(context,
+                date='date_filter_form',
+                search='search_filter_form'
+            )
+            qs = qf.filter_by_date()
+            qs = qf.filter_by_search(queryset=qs)
+            anno = qs.annotate_stockrecord(aggset=True)
+            context['object_list'] = anno['annoset']
+            context['aggset'] = anno['aggset']
+        return context
+
+
+
 
 class StockRecordStockingView(FormView):
     form_class = DateForm
@@ -94,12 +130,12 @@ class StockRecordStockingView(FormView):
                 amount=0,
                 buyitem__isend=False
             )
-            qf = QueryFilter(self.request, queryset=qs)
+            qf = QueryFilter(self.request, app_name='StockRecord-stocking', queryset=qs)
             qf.set_filter_form_to_context(context,
                 date='date_filter_form', search='search_filter_form'
             )
-            qs = qf.filter_by_date('buyitem__buy__date')
-            qs = qf.filter_by_search(app_name='StockRecord-stocking', queryset=qs)
+            qs = qf.filter_by_date()
+            qs = qf.filter_by_search(queryset=qs)
             context['formset'] = StockRecordFormSet(queryset=qs)
         return context
 
@@ -121,12 +157,12 @@ def stockrecord_stocked_view(request):
         return redirect('.')
     else:
         qs = StockRecord.objects.filter(amount__gt=0)
-        qf = QueryFilter(request, queryset=qs)
+        qf = QueryFilter(request, queryset=qs, app_name='StockRecord-stocked')
         qf.set_filter_form_to_context(context,
             date='date_filter_form', search='search_filter_form'
         )
-        qs = qf.filter_by_date('date')
-        qs = qf.filter_by_search(app_name='StockRecord-stocked', queryset=qs)
+        qs = qf.filter_by_date()
+        qs = qf.filter_by_search( queryset=qs)
         context['formset'] = StockRecordFormSet(queryset=qs)
         return render(request, 'buy/stocked_form.html', context)
 

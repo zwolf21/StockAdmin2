@@ -21,8 +21,9 @@
             
             <label>입고일자지정:</label>
             {% render_field form.date class="form-control-sm datepicker" readonly="true" tabindex="-1" %}
-            {# <a class="btn btn-warning btn-sm ml-3" href="{% url 'buy:stock-stocked' %}">입고내역기보기<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a> #}
-            <button id="btn-goto-stocked" class="btn btn-warning btn-sm ml-3">입고내역기보기<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></button>
+            <a id="btn-goto-stocked" class="btn btn-warning btn-sm ml-3">
+                입고수정<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+            </a>
         </div>
         <table class="table-bordered tablesorter tablesorter-sortable grid-table">
             <thead class="text-center thead-light">
@@ -67,11 +68,8 @@
 {% block extra_scrip %}
 <script>
 $(function(){
-    $('#btn-goto-stocked').click(function(event){
-        event.preventDefault()
-        console.log($('#form-filter'))
-        $('#form-filter').attr('action', "{% url 'buy:stock-stocked' %}").submit()
-    })
+    
+    redirectFormActionOnClick('#form-filter', '#btn-goto-stocked', "{% url 'buy:stock-stocked' %}")
 
     $('input[name*=amount]').keydown(function(event){
         var kc = event.keyCode

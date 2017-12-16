@@ -2,6 +2,7 @@ from django.db.models import Q
 
 from .smart_filter import filter_searches
 from .forms import DateFilterForm, SearchFilterForm
+from .settings import LOOKUP_CONTEXTS
 
 
 
@@ -11,9 +12,10 @@ class QueryFilter(object):
         'search': SearchFilterForm
     }
 
-    def __init__(self, request, queryset=None):
+    def __init__(self, request, queryset=None, app_name=None):
         self.request = request
         self.queryset = queryset
+        self.app_name = app_name
 
     def set_filter_form_to_context(self, context, **form_kinds):
         for kind, form_name in form_kinds.items():
@@ -42,11 +44,17 @@ class QueryFilter(object):
         return search_form
 
 
-    def filter_by_date(self, date_field, queryset=None):
+    def filter_by_date(self, date_field=None, queryset=None):
         date_form = self.get_date_filter_form()
         qs = queryset or self.queryset
+        if date_field is None:
+            lookup = LOOKUP_CONTEXTS.get(self.app_name)
+            if lookup:
+                date_fields = lookup.get('date_range')
+                if date_fields:
+                    date_field = date_fields[0]
 
-        if not qs:
+        if not qs or not date_field:
             return qs
 
         if date_form.is_valid():
@@ -69,7 +77,7 @@ class QueryFilter(object):
 
         if search_form.is_valid():
             searches = search_form.cleaned_data.get('search')
-            return filter_searches(qs, searches, app_name)
+            return filter_searches(qs, searches, app_name or self.app_name)
 
         return qs
 

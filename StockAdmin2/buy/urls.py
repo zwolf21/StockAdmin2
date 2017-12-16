@@ -14,4 +14,5 @@ urlpatterns = [
 
     path('stockrecord/stocking/', StockRecordStockingView.as_view(), name='stock-stocking'),
     path('stockrecord/stocked/', stockrecord_stocked_view, name='stock-stocked'),
+    path('stockrecord/agg/<slug:type>/', StockRecordAggregateView.as_view(), name='stock-agg'),
 ]

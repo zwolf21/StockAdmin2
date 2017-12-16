@@ -4,8 +4,8 @@
 
 
 {% block buy_header %}
-<h4>입고내역</h4>
 <div class="col-12">
+    <h4>입고수정</h4>
     {% url 'buy:stock-stocked' as stocked_url %}
     {% include "buy/components/filter_form.html" with url=stocked_url %}
 </div>
@@ -17,8 +17,7 @@
 <div class="col-12">
 <form class="form" method="post" action=".">
     <div class="form-group text-right">            
-        {# <a class="btn btn-info btn-sm ml-3" href="{% url 'buy:stock-stocking' %}">입고잡기로 돌아가기<i class="fa fa-undo" aria-hidden="true"></i></a> #}
-        <button id="btn-goto-stocking" class="btn btn-info btn-sm ml-3">입고잡기로 돌아가기<i class="fa fa-undo" aria-hidden="true"></i></button>
+        <button id="btn-goto-stocking" class="btn btn-info btn-sm ml-3">돌아가기<i class="fa fa-undo" aria-hidden="true"></i></button>
     </div>
 
     {% csrf_token %}
@@ -70,11 +69,7 @@
 {% block extra_script %}
 <script>
 $(function(){
-$('#btn-goto-stocking').click(function(event){
-        event.preventDefault()
-        console.log($('#form-filter'))
-        $('#form-filter').attr('action', "{% url 'buy:stock-stocking' %}").submit()
-    })
+    redirectFormActionOnClick('#form-filter', '#btn-goto-stocking', "{% url 'buy:stock-stocking' %}")
 })
 </script>
 {% endblock extra_script %}

@@ -68,6 +68,13 @@ function checkSync(master, slave) {
     })        
 }
 
+function redirectFormActionOnClick(formSelector, btnSelector, redirectTo) {
+    $(btnSelector).click(function(event){
+        event.preventDefault()
+        $(formSelector).attr('action', redirectTo).submit()
+    })
+}
+
 
 
 

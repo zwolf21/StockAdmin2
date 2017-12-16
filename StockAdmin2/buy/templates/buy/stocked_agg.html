@@ -1,0 +1,164 @@
+{% extends "buy/buy_base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block buy_header %}
+<div class="col-12 mb-4">
+    <h4>입고내역</h4>
+    {% include "buy/components/filter_form.html" with url='.' %}
+</div>
+<div class="col-12">
+    {% include "buy/components/stock_nav.html" %}
+</div>
+{% endblock buy_header %}
+
+
+{% block buy_content %}
+{% url 'buy:stock-agg' 'Market' as market_url %}
+{% url 'buy:stock-agg' 'Product' as product_url %}
+{% url 'buy:stock-agg' 'BuyInfo' as buyinfo_url %}
+{% url 'buy:stock-agg' 'StockRecord' as stockrecord_url %}
+
+<div class="col-12">
+{% if request.path == stockrecord_url %}
+    <table class="tablesorter tablesorter-sortable table-bordered">
+        <thead>
+            <tr>
+                <th>구매번호</th>
+                <th>입고일자</th>
+                <th>거래처</th>
+                <th>판매사</th>
+                <th>제품명</th>
+                <th>입고수량</th>
+                <th>구매단가</th>
+                <th>총입고가격</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td class="text-center">{{ object.buyitem.buy.slug }}</td>
+                <td class="text-center">{{ object.date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ object.buyitem.buyinfo.market.name }}</td>
+                <td class="text-center">{{ object.buyitem.buyinfo.product.company }}</td>
+                <td>{{ object.buyitem.buyinfo.product.name }}</td>
+                <td class="text-right">{{ object.amount }}</td>
+                <td class="text-right">{{ object.buyitem.buyinfo.price|intcomma }}</td>
+                <td class="text-right">
+                    {{ object.stocked_price_sum|intcomma }}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="text-center" colspan="7">종합</td>
+                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% elif request.path == product_url %}
+    <table class="tablesorter tablesorter-sortable table-bordered">
+        <thead>
+            <tr>
+                <th>제품코드</th>
+                <th>제품명</th>
+                <th>최초입고일</th>
+                <th>최종입고일</th>
+                <th>입고수량</th>
+                <th>총입고가격</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td class="text-center">{{ object.code }}</td>
+                <td>{{ object.name }}</td>
+                <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="text-center" colspan="5">종합</td>
+                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% elif request.path == buyinfo_url %}
+    <table class="tablesorter tablesorter-sortable table-bordered">
+        <thead>
+            <tr>
+                <th>제품코드</th>
+                <th>제품명</th>
+                <th>최초입고일</th>
+                <th>최종입고일</th>
+                <th>거래처</th>
+                <th>거래단가</th>
+                <th>입고수량</th>
+                <th>총입고가격</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td class="text-center">{{ object.product.code }}</td>
+                <td>{{ object.product.name }}</td>
+                <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ object.market.name }}</td>
+                <td class="text-right">{{ object.price|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="text-center" colspan="7">종합</td>
+                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% elif request.path == market_url %}
+    <table class="tablesorter tablesorter-sortable table-bordered">
+        <thead>
+            <tr>
+                <th>거래처</th>
+                <th>최초입고일</th>
+                <th>최종입고일</th>
+                <th>입고건수</th>
+                <th>총입고가격</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td class="text-center">{{ object.name }}</td>
+                <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
+                <td class="text-right">{{ object.stocked_count|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="text-center" colspan="4">종합</td>
+                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endif %}
+
+    
+</div>
+
+{% endblock buy_content %}
+
+{% block extra_script %}
+<script>
+$(function(){
+$('#btn-goto-stocking').click(function(event){
+        event.preventDefault()
+        $('#form-filter').attr('action', "{% url 'buy:stock-stocking' %}").submit()
+    })
+})
+</script>
+{% endblock extra_script %}
