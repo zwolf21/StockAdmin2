@@ -21,7 +21,8 @@
             
             <label>입고일자지정:</label>
             {% render_field form.date class="form-control-sm datepicker" readonly="true" tabindex="-1" %}
-            <a class="btn btn-warning btn-sm ml-3" href="{% url 'buy:stock-stocked' %}">입고내역<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>
+            {# <a class="btn btn-warning btn-sm ml-3" href="{% url 'buy:stock-stocked' %}">입고내역기보기<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a> #}
+            <button id="btn-goto-stocked" class="btn btn-warning btn-sm ml-3">입고내역기보기<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></button>
         </div>
         <table class="table-bordered tablesorter tablesorter-sortable grid-table">
             <thead class="text-center thead-light">
@@ -59,13 +60,19 @@
             </tbody>
         </table>
         <div class="form-group text-right">
-            <button class="btn btn-success btn-sm">입고저장</button>
+            <button type="submit" class="btn btn-success btn-sm">입고저장<i class="fa fa-floppy-o" aria-hidden="true"></i></button>
         </div>
     </form>
 </div>
 {% block extra_scrip %}
 <script>
 $(function(){
+    $('#btn-goto-stocked').click(function(event){
+        event.preventDefault()
+        console.log($('#form-filter'))
+        $('#form-filter').attr('action', "{% url 'buy:stock-stocked' %}").submit()
+    })
+
     $('input[name*=amount]').keydown(function(event){
         var kc = event.keyCode
         var step = parseInt($(this).attr('step'))
