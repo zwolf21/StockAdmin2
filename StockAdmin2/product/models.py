@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 
 from .mixins import BuyInfoMixin
+from .managers import MarketManager, ProductManager, BuyInfoManager
 
 
 class Market(models.Model):
@@ -12,6 +13,8 @@ class Market(models.Model):
     email = models.EmailField('메일', blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = MarketManager()
 
     class Meta:
         verbose_name = '도매상'
@@ -34,6 +37,8 @@ class Product(models.Model):
     etc_class = models.CharField('기타구분', max_length=10, choices=zip(ETC_CLASS, ETC_CLASS), default='일반')
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = ProductManager()
 
     class Meta:
         verbose_name = '제품'
