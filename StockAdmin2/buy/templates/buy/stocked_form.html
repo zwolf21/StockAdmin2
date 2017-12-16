@@ -3,11 +3,30 @@
 {% load widget_tweaks %}
 
 
+{% block extra_style %}
+<style type="text/css">
+    th {
+        background-color: burlywood !important;
+    }
+</style>
+{% endblock extra_style %}
+
+
 {% block buy_header %}
 <div class="col-12">
     <h4>입고수정</h4>
-    {% url 'buy:stock-stocked' as stocked_url %}
-    {% include "buy/components/filter_form.html" with url=stocked_url %}
+    <form id="form-filter" class="form" method="get" action=".">
+        <div class="form-group form-row">
+            <div class="col-6">
+                {% include "buy/components/filter_form.html" %}
+            </div>
+            <div class="col-6 text-right">
+                <a class="btn btn-secondary btn-sm ml-3" href="{% url 'buy:stock-stocking' %}?{{ request.GET.urlencode }}">
+                    돌아가기<i class="fa fa-undo" aria-hidden="true"></i>
+                </a>                
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock buy_header %}
 
@@ -16,10 +35,6 @@
 
 <div class="col-12">
 <form class="form" method="post" action=".">
-    <div class="form-group text-right">            
-        <button id="btn-goto-stocking" class="btn btn-info btn-sm ml-3">돌아가기<i class="fa fa-undo" aria-hidden="true"></i></button>
-    </div>
-
     {% csrf_token %}
     {{ formset.management_form }}
     <table class="table-bordered tablesorter tablesorter-sortable">
@@ -67,9 +82,4 @@
 {% endblock buy_content %}
 
 {% block extra_script %}
-<script>
-$(function(){
-    redirectFormActionOnClick('#form-filter', '#btn-goto-stocking', "{% url 'buy:stock-stocking' %}")
-})
-</script>
 {% endblock extra_script %}

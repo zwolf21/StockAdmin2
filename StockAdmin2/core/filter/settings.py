@@ -75,70 +75,7 @@ LOOKUP_CONTEXTS = {
             'etc_class'
         ]
     },
-    'Product-StockRecord': {
-        'date_range': [
-            'buyinfo__buyitem__stockrecord__date',
-        ],
-        'contains': [
-            'name', 'company'
-        ],
-        'market': [
-            'buyinfo__market__name',
-        ],
-        'etc_class': [
-            'etc_class'
-        ]
-    },
-    'Market-StockRecord': {
-        'date_range': [
-            'buyinfo__buyitem__stockrecord__date'
-        ],
-        'contains': [
-            'buyinfo__product__name',
-            'buyinfo__product__company',
-        ],
-        'market': [
-            'name',
-        ],
-        'etc_class': [
-            'butinfo__product__etc_class',
-        ]
-    },
-    'BuyInfo-StockRecord': {
-        'date_range': [
-            'buyitem__stockrecord__date',
-        ],
-        'contains': [
-            'product__name',
-            'product__company',
-        ],
-        'market': [
-            'market__name',
-        ],
-        'etc_class': [
-            'product__etc_class',
-        ]
-    },
-    'StockRecord-StockRecord': {
-        'date_range': [
-            'date',
-        ],
-        'contains': [
-            'buyitem__buyinfo__product__name',
-            'buyitem__buyinfo__product__company',
-        ],
-        'slug': [
-            'buyitem__buy__slug',
-        ],
-        'etc_class': [
-            'buyitem__buyinfo__product__etc_class',
-        ],
-        'market': [
-            'buyitem__buyinfo__market__name',
-        ]
-    },
-
-
+    
 }
 
 

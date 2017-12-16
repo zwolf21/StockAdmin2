@@ -3,12 +3,33 @@
 {% load widget_tweaks %}
 
 
+{% block extra_style %}
+<style type="text/css">
+    th {
+        background-color: palegreen !important;
+    }
+</style>
+{% endblock extra_style %}
+
+
 {% block buy_header %}
 <div class="col-12 mb-4">
     <h4>입고내역</h4>
-    {% include "buy/components/filter_form.html" with url='.' %}
+    <form id="form-filter" class="form" method="get" action=".">
+        <div class="form-group form-row">
+        <div class="col-6">
+            {% include "buy/components/filter_form.html" %}
+        </div>
+        <div class="col-6 text-right">
+            <a class="btn btn-secondary btn-sm ml-3" href="{% url 'buy:stock-stocking' %}?{{ request.GET.urlencode }}">
+                입고잡기<i class="fa fa-cubes" aria-hidden="true"></i>
+            </a>     
+        </div>
+        </div>
+    </form>
 </div>
 <div class="col-12">
+    <hr>
     {% include "buy/components/stock_nav.html" %}
 </div>
 {% endblock buy_header %}
@@ -52,7 +73,7 @@
             {% endfor %}
             <tr>
                 <td class="text-center" colspan="7">종합</td>
-                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+                <td class="text-right">{{ total_stocked_price|intcomma }}</td>
             </tr>
         </tbody>
     </table>
@@ -71,8 +92,8 @@
         <tbody>
             {% for object in object_list %}
             <tr>
-                <td class="text-center">{{ object.code }}</td>
-                <td>{{ object.name }}</td>
+                <td class="text-center">{{ object.product_code }}</td>
+                <td>{{ object.product_name }}</td>
                 <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
                 <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
                 <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
@@ -81,7 +102,7 @@
             {% endfor %}
             <tr>
                 <td class="text-center" colspan="5">종합</td>
-                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+                <td class="text-right">{{ total_stocked_price|intcomma }}</td>
             </tr>
         </tbody>
     </table>
@@ -102,19 +123,19 @@
         <tbody>
             {% for object in object_list %}
             <tr>
-                <td class="text-center">{{ object.product.code }}</td>
-                <td>{{ object.product.name }}</td>
+                <td class="text-center">{{ object.product_code }}</td>
+                <td>{{ object.product_name }}</td>
                 <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
                 <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
-                <td class="text-center">{{ object.market.name }}</td>
-                <td class="text-right">{{ object.price|intcomma }}</td>
+                <td class="text-center">{{ object.market_name }}</td>
+                <td class="text-right">{{ object.buy_price|intcomma }}</td>
                 <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
                 <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
             </tr>
             {% endfor %}
             <tr>
                 <td class="text-center" colspan="7">종합</td>
-                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+                <td class="text-right">{{ total_stocked_price|intcomma }}</td>
             </tr>
         </tbody>
     </table>
@@ -132,7 +153,7 @@
         <tbody>
             {% for object in object_list %}
             <tr>
-                <td class="text-center">{{ object.name }}</td>
+                <td class="text-center">{{ object.market_name }}</td>
                 <td class="text-center">{{ object.first_stocked_date|date:"Y-m-d" }}</td>
                 <td class="text-center">{{ object.last_stocked_date|date:"Y-m-d" }}</td>
                 <td class="text-right">{{ object.stocked_count|intcomma }}</td>
@@ -141,7 +162,7 @@
             {% endfor %}
             <tr>
                 <td class="text-center" colspan="4">종합</td>
-                <td class="text-right">{{ aggset.stocked_price_total|intcomma }}</td>
+                <td class="text-right">{{ total_stocked_price|intcomma }}</td>
             </tr>
         </tbody>
     </table>
@@ -155,10 +176,7 @@
 {% block extra_script %}
 <script>
 $(function(){
-$('#btn-goto-stocking').click(function(event){
-        event.preventDefault()
-        $('#form-filter').attr('action', "{% url 'buy:stock-stocking' %}").submit()
-    })
+    
 })
 </script>
 {% endblock extra_script %}
