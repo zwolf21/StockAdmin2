@@ -59,7 +59,10 @@
                 {% endfor %}
             <tr>
                 <td class="text-center">{{ form.instance.buyitem.buy.slug }}</td>
-                <td class="text-center">{{ form.instance.date|date:"Y-m-d" }}</td>
+                <td class="text-center">
+                    <span hidden>{{ form.date }}</span>
+                    {{ form.instance.date|date:"Y-m-d" }}
+                </td>
                 <td class="text-center">{{ form.instance.buyitem.buyinfo.market.name }}</td>
                 <td>{{ form.instance.buyitem.buyinfo.product.company }}</td>
                 <td>{{ form.buyitem }}{{ form.instance.buyitem.buyinfo.product.name }}</td>

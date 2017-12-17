@@ -5,7 +5,7 @@ from django.db.models import *
 from django.urls import reverse
 from django.utils import timezone
 
-from .managers import StockRecordManager
+from .managers import StockRecordManager, BuyItemManager
 
 from utils.shortcuts import sequence_date_slugify
 
@@ -64,6 +64,8 @@ class BuyItem(models.Model):
     isend = models.BooleanField('구매종결', default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = BuyItemManager()
 
     class Meta:
         verbose_name = '구매품목'

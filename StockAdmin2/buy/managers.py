@@ -1,6 +1,43 @@
 from django.db import models
 from django.db.models import *
-from django.apps import apps
+
+
+
+class BuyItemQuerySet(models.QuerySet):
+
+    def get_valid_set(self):
+        return self.filter(buy__isnull=False, buy__commiter__isnull=False)
+
+    def annotate_fk(self):
+        return self.annotate(
+            id_buy=F('buy_id'), 
+            id_buyinfo=F('buyinfo_id'), 
+            id_buyitem=F('id'),
+            id_product=F('buyinfo__product__id'),
+            id_market=F('buyinfo__market__id')
+        )
+
+
+    def group_by_fk(self, model_name, get_total_price=True):
+        qs = self.get_valid_set()
+
+        if model_name == 'Product':
+            group_key = 'buyinfo__product'
+            groupedset = qs.order_by(group_key).values(group_key).annotate(
+                product_code=F('buyinfo__product__code'),
+                product_name=F('buyinfo__product__name'),
+                buy_amount_sum=Sum('amount'),
+                buy_price_sum=Sum(F('buyinfo__price')*F('amount'), output_field=IntegerField())
+            )
+        return groupedset
+
+
+
+
+class BuyItemManager(models.Manager):
+
+    def get_queryset(self):
+        return BuyItemQuerySet(self.model, using=self._db)
 
 
 
@@ -9,22 +46,18 @@ class StockRecordQuerySet(models.QuerySet):
     def get_valid_set(self):
         return self.filter(amount__gt=0)
 
-    # def annotate_stockrecord(self, aggset=False):
-    #     annoset = self.get_valid_set().annotate(
-    #         buy_price=F('buyitem__buyinfo__price'),
-    #         stocked_price_sum=Sum(
-    #             F('buy_price')*F('amount'),
-    #             output_field=IntegerField()
-    #         ),
-    #     )
-    #     if aggset == False:
-    #         return annoset
-    #     aggset = annoset.aggregate(stocked_price_total=Sum('stocked_price_sum'))
-    #     return {'annoset': annoset, 'aggset': aggset}
-
+    def annotate_fk(self):
+        return self.annotate(
+            id_stockrecord=F('id'),
+            id_buyitem=F('buyitem_id'),
+            id_buyinfo=F('buyitem__buyinfo__id'),
+            id_product=F('buyitem__buyinfo__product__id'),
+            id_market=F('buyitem__buyinfo__market__id')
+        )
 
     def group_by_fk(self, model_name=None, get_total_price=True):
         qs = self.get_valid_set()
+
         if model_name == 'Product':
             group_key = 'buyitem__buyinfo__product'
             groupedset = qs.order_by(group_key).values(group_key).annotate(
@@ -83,20 +116,8 @@ class StockRecordQuerySet(models.QuerySet):
 
 
 
-
 class StockRecordManager(models.Manager):
 
     def get_queryset(self):
         return StockRecordQuerySet(self.model, using=self._db)
 
-    # def create_dummy(self, buyitem):
-    #     if buyitem:
-    #         queryset = self.get_queryset()
-    #         stockrecord_set = self.buyitem.stockrecord_set
-    #         dummy = stockrecord_set.filter(amount=0)
-    #         if not buyitem.iscompleted:
-    #             if not dummy.exists():
-    #                 self.create(buyitem=buyitem, amount=0)
-    #         else:
-    #             if dummy.exists():
-    #                 dummy.delete()

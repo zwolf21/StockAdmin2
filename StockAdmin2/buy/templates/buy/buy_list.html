@@ -1,11 +1,19 @@
 {% extends "buy/buy_base.html" %}
 
 {% block buy_header %}
+<div class="col-12">
+    
 <h4>구매요청서 목록</h4>
+</div>
 {% endblock buy_header %}
 
 {% block buy_content %}
 <div class="col-12">    
+<div class="text-right my-3">
+    <a class="btn btn-secondary btn-sm" href="{% url 'buy:buy-cart' %}">품목입력하러가기</a>   
+    <a class="btn btn-secondary btn-sm" href="{% url 'buy:buy-cart' %}">품목입력하러가기<i class="fa fa-pencil" aria-hidden="true"></i>
+</a>   
+</div>
     <table class="table table-hover table-bordered table-sm">
         <thead class="thead-dark text-center">
             <tr>
@@ -26,9 +34,6 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
-<div class="col-12 text-right">
-    <a class="btn btn-info btn-sm" href="{% url 'buy:buy-cart' %}">품목입력하러가기</a>   
 </div>
 
 {% endblock buy_content %}
