@@ -31,10 +31,16 @@ ETC_CLASS = '일반', '항암제', '마약', '향정', '수액', '영양수액',
 class Product(models.Model):
     name = models.CharField('제품명', max_length=50, unique=True)
     code = models.CharField('제품코드', max_length=50, unique=True)
+    edi_code = models.CharField('보험코드', blank=True, max_length=50)
     company = models.CharField('판매사', max_length=50, blank=True)
     std_unit = models.CharField('제품규격', max_length=10, choices=zip(STD_UNITs, STD_UNITs))
     pkg_amount = models.IntegerField('포장수량', default=1)
     etc_class = models.CharField('기타구분', max_length=10, choices=zip(ETC_CLASS, ETC_CLASS), default='일반')
+    apply_root = models.CharField('복용방법', max_length=50, blank=True)
+    unit = models.CharField('적용단위', max_length=50, blank=True)
+    unit_amount = models.CharField('규격단위량', max_length=50, blank=True)
+
+    op_type = models.CharField('마약류구분', blank=True, max_length=50)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
@@ -55,9 +61,11 @@ class Product(models.Model):
 class BuyInfo(BuyInfoMixin, models.Model):
     slug = models.SlugField('구매코드', unique=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    market = models.ForeignKey(Market, on_delete=models.CASCADE)
+    market = models.ForeignKey(Market, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateField('시작일자', blank=True, default=timezone.now)
     price = models.DecimalField('구매가격', max_digits=50, decimal_places=2)
+    pay_type = models.CharField('급여구분', blank=True, max_length=50)
+    pro_type = models.CharField('전문/일반', blank=True, max_length=50)
     active = models.BooleanField('사용중', default=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)

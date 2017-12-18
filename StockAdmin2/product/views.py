@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views.generic import *
 
 from .models import Market, Product, BuyInfo
 from .forms import get_buyinfo_inline_formset
+from .services import update_info_by_api
 from core.filter import QueryFilter
+
+
 
 
 class ProductListView(ListView):
@@ -21,13 +24,18 @@ class ProductListView(ListView):
         return context
     
 
+
 class ProductDetailView(DetailView):
     model = Product
 
 
+
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = 'code', 'name', 'company', 'std_unit', 'pkg_amount', 'etc_class',
+    fields = [
+                'code', 'name', 'company', 'std_unit', 'pkg_amount', 'etc_class', 
+                'apply_root', 'unit', 'unit_amount', 'op_type', 'edi_code',
+            ]
     formset_extra = 0
 
     def get_context_data(self, **kwargs):
@@ -44,6 +52,21 @@ class ProductUpdateView(UpdateView):
             formset.save()
         return super(ProductUpdateView, self).form_valid(form)
 
+
+
 class ProductUpdateBuyInfoCreateView(ProductUpdateView):
     formset_extra = 1
+
+
+def api_update(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    update_info_by_api(product)
+    return redirect(product.get_absolute_url())
+
+
+
+
+
+
+
 

@@ -25,6 +25,18 @@
         <th>기타구분:</th>
         <td>{{ object.etc_class }}</td>
     </tr>
+    <tr>
+        <th>적용방법</th>
+        <td>{{ object.apply_root }}</td>
+        <th>마약류구분</th>
+        <td>{{ object.op_type }}</td>
+        <th>적용단위</th>
+        <td>{{ object.unit }} {{ object.unit_amount }}</td>
+    </tr>
+    <tr>
+        <th>보험코드</th>
+        <td>{{ object.edi_code }}</td>
+    </tr>
 </table>
 <h5>거래정보</h5>
 <table class="product-info tablesorter" border="1">
@@ -32,6 +44,8 @@
         <tr>
             <th>도매상</th>
             <th>거래시작일</th>
+            <th>급여구분</th>
+            <th>전문/일반</th>
             <th>거래가격</th>
             <th>사용중</th>
         </tr>
@@ -41,6 +55,8 @@
         <tr>
             <td>{{ info.market }}</td>
             <td>{{ info.date|date:"Y-m-d" }}</td>
+            <td>{{ info.pay_type }}</td>
+            <td>{{ info.pro_type }}</td>
             <td>{{ info.price }}</td>
             <td>{{ info.active }}</td>
         </tr>
@@ -51,5 +67,6 @@
 <div class="col-12 text-right">
     <a class="btn btn-info btn-sm" href="{% url 'product:list' %}">목록으로</a>
     <a class="btn btn-warning btn-sm" href="{% url 'product:update' object.pk %}">제품 정보 수정</a>
+    <a class="btn btn-warning btn-sm" href="{% url 'product:api-update' object.pk %}">구매정보 자동업데이트</a>
 </div>
 {% endblock product_content %}

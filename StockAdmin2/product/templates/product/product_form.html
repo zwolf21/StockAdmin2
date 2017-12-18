@@ -27,6 +27,19 @@
                 <th>기타구분:</th>
                 <td>{{ form.etc_class }}</td>
             </tr>
+            <tr>
+                <th>적용방법</th>
+                <td>{{ form.apply_root }}</td>
+                <th>마약류구분</th>
+                <td>{{ form.op_type }}</td>
+                <th>적용단위</th>
+                <td>{{ form.unit }} {{ form.unit_amount }}</td>
+            </tr>
+            <tr>
+                <th>보험코드</th>
+                <th>{{ form.edi_code }}</th>
+            </tr>
+
         </table>
         <h5>거래정보</h5>
         {{ formset.management_form }}
@@ -35,6 +48,8 @@
                 <tr>
                     <th>도매상</th>
                     <th>거래시작일</th>
+                    <th>급여구분</th>
+                    <th>전문/일반</th>
                     <th>거래가격</th>
                     <th>사용중</th>
                 </tr>
@@ -47,6 +62,8 @@
                 <tr>
                     <td>{{ buyinfo_form.market }}</td>
                     <td>{{ buyinfo_form.date }}</td>
+                    <td>{{ buyinfo_form.pay_type }}</td>
+                    <td>{{ buyinfo_form.pro_type }}</td>
                     <td>{{ buyinfo_form.price }}</td>
                     <td class="text-center">{{ buyinfo_form.active }}</td>
                 </tr>

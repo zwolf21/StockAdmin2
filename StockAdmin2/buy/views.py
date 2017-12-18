@@ -81,34 +81,6 @@ class BuyItemCartFormView(FormView):
 
 
 
-
-
-
-# class BuyItemAggregateView(ListView):
-#     model = BuyItem
-#     template_name = 'buy/buyitem_agg.html'
-
-#     def get_context_data(self, **kwargs):
-#         context = super(BuyItemAggregateView, self).get_context_data(**kwargs)
-#         agg_type = self.kwargs.get('type')
-#         qs = self.get_queryset().filter(buy__isnull=False, buy__commiter__isnull=False)
-#         qf = QueryFilter(self.request, queryset=qs)
-#         qf.set_filter_form_to_context(context)
-#         buyitem_set = qf.filter_by_all()
-#         # stockrecord_set = StockRecord.objects.filter(buyitem__in=buyitem_set, amount__gt=0)
-#         # bqsd = QuerySetDataFrame(buyitem_set)
-#         # sqsd = QuerySetDataFrame(stockrecord_set)
-#         # buyitem_df = bqsd.annotate(agg_type)
-#         # stockrecord_df = sqsd.annotate(agg_type)
-#         # merge_on = 'id_{}'.format(agg_type.lower())
-#         # df = stockrecord_df[[merge_on, 'stocked_amount_sum', 'stocked_price_sum']].merge(buyitem_df, on=merge_on)
-#         # df['is_completed'] = (df.stocked_amount_sum == df.buy_amount_sum)
-#         # df.loc[df.is_completed == False, ['is_completed']] = df['isend']
-            
-#         # context['object_list'] = df_to_records(df)
-#         return context
-
-
 class BuyItemAggregateView(ListView):
     model = BuyItem
     template_name = 'buy/buyitem_agg.html'

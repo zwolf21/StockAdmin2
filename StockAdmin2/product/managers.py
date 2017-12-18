@@ -5,10 +5,6 @@ from django.db.models import *
 
 class MarketQuerySet(models.QuerySet):
 
-    def annotate_fk(self):
-        return self.annotate(id_market=F('id'))
-
-
     def get_valid_stockrecord_set(self):
         return self.filter(buyinfo__buyitem__stockrecord__amount__gt=0)
 
@@ -39,9 +35,6 @@ class MarketManager(models.Manager):
 
 class ProductQuerySet(models.QuerySet):
 
-    def annotate_fk(self):
-        return self.annotate(id_product=F('id'))
-
     def get_valid_stockrecord_set(self):
         return self.filter(buyinfo__buyitem__stockrecord__amount__gt=0)
 
@@ -71,13 +64,6 @@ class ProductManager(models.Manager):
 
 
 class BuyInfoQuerySet(models.QuerySet):
-
-    def annotate_fk(self):
-        return self.annotate(
-            id_buyinfo=F('id'),
-            id_product=F('product_id'),
-            id_market=F('market_id')
-        )
 
     def get_valid_stockrecord_set(self):
         return self.filter(buyitem__stockrecord__amount__gt=0)

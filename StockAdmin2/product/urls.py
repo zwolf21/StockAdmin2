@@ -9,4 +9,5 @@ urlpatterns = [
     path('<int:pk>/', ProductDetailView.as_view(), name='detail'),
     path('update/<int:pk>/', ProductUpdateView.as_view(), name='update'),
     path('update/<int:pk>/buyinfo/', ProductUpdateBuyInfoCreateView.as_view(), name='update-buyinfo-create'),
+    path('update/api/<int:pk>/', api_update, name='api-update'),
 ]

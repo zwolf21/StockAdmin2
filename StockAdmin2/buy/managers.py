@@ -8,16 +8,6 @@ class BuyItemQuerySet(models.QuerySet):
     def get_valid_set(self):
         return self.filter(buy__isnull=False, buy__commiter__isnull=False)
 
-    def annotate_fk(self):
-        return self.annotate(
-            id_buy=F('buy_id'), 
-            id_buyinfo=F('buyinfo_id'), 
-            id_buyitem=F('id'),
-            id_product=F('buyinfo__product__id'),
-            id_market=F('buyinfo__market__id')
-        )
-
-
     def group_by_fk(self, model_name, get_total_price=True):
         qs = self.get_valid_set()
 
@@ -90,15 +80,6 @@ class StockRecordQuerySet(models.QuerySet):
 
     def get_valid_set(self):
         return self.filter(amount__gt=0)
-
-    def annotate_fk(self):
-        return self.annotate(
-            id_stockrecord=F('id'),
-            id_buyitem=F('buyitem_id'),
-            id_buyinfo=F('buyitem__buyinfo__id'),
-            id_product=F('buyitem__buyinfo__product__id'),
-            id_market=F('buyitem__buyinfo__market__id')
-        )
 
     def group_by_fk(self, model_name=None, get_total_price=True):
         qs = self.get_valid_set()
