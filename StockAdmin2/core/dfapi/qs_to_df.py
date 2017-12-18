@@ -8,19 +8,19 @@ def queryset_to_dataframe(queryset):
     model = queryset.model
 
     if model == Market:
-        queryset = queryset.annotate(id_market=F('id'))
+        queryset = queryset.annotate(market=F('id'))
         df = read_frame(queryset,
-            fieldnames=['id_market', 'name']
+            fieldnames=['market', 'name']
         )
         df.rename(
             columns={'name': 'market_name'},
             inplace=True
         )
     elif model == Product:
-        queryset = queryset.annotate(id_product=F('id'))
+        queryset = queryset.annotate(product=F('id'))
         df = read_frame(queryset,
             fieldnames=[
-                'id_product',
+                'product',
                 'code', 'name', 'company', 'std_unit', 'pkg_amount', 'etc_class'
             ]
         )
@@ -30,13 +30,13 @@ def queryset_to_dataframe(queryset):
         )
     elif model == BuyInfo:
         queryset = queryset.annotate(
-            id_buyinfo=F('id'),
-            id_product=F('product_id'),
-            id_market=F('market_id')
+            buyinfo=F('id'),
+            product=F('product_id'),
+            market=F('market_id')
         )
         df = read_frame(queryset,
             fieldnames=[
-                'id_buyinfo', 'id_market', 'id_product',
+                'buyinfo', 'market', 'product',
                 'price', 'slug', 'date', 'active'
             ]
         )
@@ -48,11 +48,11 @@ def queryset_to_dataframe(queryset):
         )
     elif model == Buy:
         queryset = queryset.annotate(
-            id_buy=F('id'),
+            buy=F('id'),
         )
         df = read_frame(queryset,
             fieldnames=[
-                'id_buy', 'slug', 'commiter', 'date'
+                'buy', 'slug', 'commiter', 'date'
             ]
         )
         df.rename(
@@ -60,16 +60,16 @@ def queryset_to_dataframe(queryset):
         )
     elif model == BuyItem:
         queryset = queryset.annotate(
-            id_buy=F('buy_id'), 
-            id_buyinfo=F('buyinfo_id'), 
-            id_buyitem=F('id'),
-            id_product=F('buyinfo__product__id'),
-            id_market=F('buyinfo__market__id'),
+            buy=F('buy_id'), 
+            buyinfo=F('buyinfo_id'), 
+            buyitem=F('id'),
+            product=F('buyinfo__product__id'),
+            market=F('buyinfo__market__id'),
             buy_slug=F('buy__slug'),
         )
         df = read_frame(queryset,
             fieldnames=[
-                'id_buyitem', 'id_buyinfo', 'id_buy', 'id_product', 'id_market',
+                'buyitem', 'buyinfo', 'buy', 'product', 'market',
                 'amount', 'comment', 'isend', 'buy_slug'
             ]
         )
@@ -79,15 +79,15 @@ def queryset_to_dataframe(queryset):
         )
     elif model == StockRecord:
         queryset = queryset.annotate(
-            id_stockrecord=F('id'),
-            id_buyitem=F('buyitem_id'),
-            id_buyinfo=F('buyitem__buyinfo__id'),
-            id_product=F('buyitem__buyinfo__product__id'),
-            id_market=F('buyitem__buyinfo__market__id')
+            stockrecord=F('id'),
+            buyitem=F('buyitem_id'),
+            buyinfo=F('buyitem__buyinfo__id'),
+            product=F('buyitem__buyinfo__product__id'),
+            market=F('buyitem__buyinfo__market__id')
         )
         df = read_frame(queryset, 
             fieldnames=[
-                'id_stockrecord', 'id_buyitem', 'id_buyinfo', 'id_product', 'id_market',
+                'stockrecord', 'buyitem', 'buyinfo', 'product', 'market',
                 'amount', 'date',
             ]
         )

@@ -37,11 +37,7 @@
 {% url 'buy:buy-agg' 'BuyItem' as buyitem_url %}
 
 <div class="col-12">
-    <ul>
-        {% for object in object_list %}
-        <li>{{ object }}</li>
-        {% endfor %}
-    </ul>
+
 {% if request.path == buyitem_url %}
     <table class="tablesorter tablesorter-sortable table-bordered">
         <thead>
@@ -155,7 +151,7 @@
         {% for object in object_list %}
         <tr>
             <td class="text-center">{{ object.market_name }}</td>
-            <td class="text-right">{{ object.buy_count|intcomma }}</td>
+            <td class="text-right">{{ object.buyitem_count|intcomma }}</td>
             <td class="text-right">{{ object.buy_price_sum|intcomma }}</td>
         </tr>
         {% endfor %}
