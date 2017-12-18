@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import *
 
 from .models import Buy, BuyItem, StockRecord
-from .forms import BuyForm, BuyItemInlineFormSet, BuyItemCartFormSet, DateForm, StockRecordFormSet
+from .forms import BuyForm, BuyItemInlineFormSet, BuyItemFormSet, BuyItemCartFormSet, DateForm, StockRecordFormSet
 from .services import buyitem_formset_operation, rollback_to_cart, stockrecord_formset_operation
 from core.filter import QueryFilter
 
@@ -80,7 +80,34 @@ class BuyItemCartFormView(FormView):
         return super(BuyItemCartFormView, self).form_valid(form)
 
 
-from core.dfapi import QuerySetDataFrame, df_to_records
+
+
+
+
+# class BuyItemAggregateView(ListView):
+#     model = BuyItem
+#     template_name = 'buy/buyitem_agg.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super(BuyItemAggregateView, self).get_context_data(**kwargs)
+#         agg_type = self.kwargs.get('type')
+#         qs = self.get_queryset().filter(buy__isnull=False, buy__commiter__isnull=False)
+#         qf = QueryFilter(self.request, queryset=qs)
+#         qf.set_filter_form_to_context(context)
+#         buyitem_set = qf.filter_by_all()
+#         # stockrecord_set = StockRecord.objects.filter(buyitem__in=buyitem_set, amount__gt=0)
+#         # bqsd = QuerySetDataFrame(buyitem_set)
+#         # sqsd = QuerySetDataFrame(stockrecord_set)
+#         # buyitem_df = bqsd.annotate(agg_type)
+#         # stockrecord_df = sqsd.annotate(agg_type)
+#         # merge_on = 'id_{}'.format(agg_type.lower())
+#         # df = stockrecord_df[[merge_on, 'stocked_amount_sum', 'stocked_price_sum']].merge(buyitem_df, on=merge_on)
+#         # df['is_completed'] = (df.stocked_amount_sum == df.buy_amount_sum)
+#         # df.loc[df.is_completed == False, ['is_completed']] = df['isend']
+            
+#         # context['object_list'] = df_to_records(df)
+#         return context
+
 
 class BuyItemAggregateView(ListView):
     model = BuyItem
@@ -92,18 +119,10 @@ class BuyItemAggregateView(ListView):
         qs = self.get_queryset().filter(buy__isnull=False, buy__commiter__isnull=False)
         qf = QueryFilter(self.request, queryset=qs)
         qf.set_filter_form_to_context(context)
-        buyitem_set = qf.filter_by_all()
-        # stockrecord_set = StockRecord.objects.filter(buyitem__in=buyitem_set, amount__gt=0)
-        # bqsd = QuerySetDataFrame(buyitem_set)
-        # sqsd = QuerySetDataFrame(stockrecord_set)
-        # buyitem_df = bqsd.annotate(agg_type)
-        # stockrecord_df = sqsd.annotate(agg_type)
-        # merge_on = 'id_{}'.format(agg_type.lower())
-        # df = stockrecord_df[[merge_on, 'stocked_amount_sum', 'stocked_price_sum']].merge(buyitem_df, on=merge_on)
-        # df['is_completed'] = (df.stocked_amount_sum == df.buy_amount_sum)
-        # df.loc[df.is_completed == False, ['is_completed']] = df['isend']
-            
-        # context['object_list'] = df_to_records(df)
+        qs = qf.filter_by_all()
+        annoset, total_buy_price = qs.group_by_fk(agg_type)
+        context['object_list'] = annoset
+        context['total_buy_price'] = total_buy_price
         return context
 
 
@@ -173,8 +192,21 @@ def stockrecord_stocked_view(request):
         return render(request, 'buy/stocked_form.html', context)
 
 
-
-
+def buyitem_update_view(request):
+    context = {}
+    if request.method == "POST":
+        formset = BuyItemFormSet(request.POST or None)
+        if formset.is_valid():
+            formset.save()
+            return redirect(request.META['HTTP_REFERER'])
+        return redirect('.')
+    else:
+        qs = BuyItem.objects.filter(isend=True)
+        qf = QueryFilter(request, queryset=qs)
+        qf.set_filter_form_to_context(context)
+        qs = qf.filter_by_all()
+        context['formset'] = BuyItemFormSet(queryset=qs)
+        return render(request, 'buy/buyitem_form.html', context)
 
 
 

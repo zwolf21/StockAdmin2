@@ -1,0 +1,71 @@
+{% extends "buy/buy_base.html" %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block buy_header %}
+<div class="col-12">
+<h4>종결내역 수정</h4>
+<form id="form-filter" class="form" method="get" action=".">
+    <div class="form-group form-row">
+        <div class="col-6">
+            {% include "buy/components/filter_form.html" %}
+        </div>
+        <div class="col-6 text-right">
+            <a class="btn btn-secondary btn-sm ml-3" href="{% url 'buy:stock-stocking' %}?{{ request.GET.urlencode }}">
+                돌아가기<i class="fa fa-undo" aria-hidden="true"></i>
+            </a>                
+        </div>
+    </div>
+</form>
+</div>
+
+{% endblock buy_header %}
+
+
+{% block buy_content %}
+<div class="col-12">
+
+<hr>
+<form id="cart-form" method="post" action=".">
+    <table class="table table-bordered table-hover table-sm tablesorter tablesorter-sortable">
+        {% csrf_token %}
+        <thead class="thead-default text-center">
+            <tr>
+                <th>구매번호</th>
+                <th>거래처</th>
+                <th>판매사</th>
+                <th>제품명</th>
+                <th>구매량</th>
+                <th>입고량</th>
+                <th>종결</th>
+            </tr>
+        </thead>
+        {{ formset.management_form }}
+        <tbody>
+            {% for form in formset %}
+            {% for hidden in form.hidden_fields %} {{ hidden }} {% endfor %}
+            <tr>
+                <td class="text-center">{{ form.instance.buy.slug }}</td>
+                <td class="text-center">{{ form.instance.buyinfo.market.name }}</td>
+                <td class="text-center">{{ form.instance.buyinfo.product.company }}</td>
+                <td>{{ form.instance.buyinfo.product.name }}</td>
+                <td class="text-right">{{ form.instance.amount }}</td>
+                <td class="text-right">{{ form.instance.get_stocked_sum }}</td>
+                <td class="text-center">{{ form.isend }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-right">
+        <button class="btn btn-success btn-sm">저장</button>
+    </div>
+</form>
+</div>
+
+{% endblock buy_content %}
+
+
+
+
+

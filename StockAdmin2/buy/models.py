@@ -80,7 +80,7 @@ class BuyItem(models.Model):
 
     def save(self, **kwargs):
         super(BuyItem, self).save(**kwargs)
-        self.reload_zero_stockrecord()            
+        self.reload_zero_stockrecord()          
 
     def get_stocked_sum(self):
         aggset = self.stockrecord_set.aggregate(stocked=Sum('amount'))
@@ -93,6 +93,16 @@ class BuyItem(models.Model):
         incompleted_stock = self.get_incompleted_stock()
         pkg_amount = self.buyinfo.product.pkg_amount or 1
         return incompleted_stock//pkg_amount
+
+    @property
+    def stocked_percent(self):
+        return self.get_stocked_sum()*100/self.amount
+
+    @property
+    def ended_percent(self):
+        if self.isend:
+            return 100 - self.stocked_percent
+        return 0
 
     def get_stock_status(self):
         if self.isend == True:

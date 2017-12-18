@@ -89,7 +89,6 @@ class BuyItemQuerySetDataFrame:
         df.drop_duplicates(group_key, inplace=True)
         return df
 
-def merge_buyitem_with_stockrecord(buyitemset):
 
 
 

@@ -18,10 +18,15 @@ class BuyItemForm(forms.ModelForm):
     buyinfo_name = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': '검색어 입력'}))
     class Meta:
         model = BuyItem
-        fields = 'buy', 'buyinfo', 'amount', 'comment',
+        fields = 'buy', 'buyinfo', 'amount', 'comment', 
         widgets = {
             'buyinfo': forms.widgets.HiddenInput()
         }
+
+BuyItemFormSet = modelformset_factory(BuyItem,
+    fields = ['isend'],
+    extra=0,
+)
 
 
 class DateForm(forms.Form):

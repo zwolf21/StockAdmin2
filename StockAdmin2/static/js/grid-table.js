@@ -11,7 +11,7 @@ $(function(){
                 var max = $(this).attr('max')
                 $(this).val(max)
                 break;
-            // case 37: case 39:
+            case 37: case 39:
             //     var rowInputs = row.children('td').children('input[type=number]')
             //     c = rowInputs
             //     i = cell
@@ -20,7 +20,8 @@ $(function(){
             //     var target = rowInputs[idx]
             //     target.focus()
             //     target.select()
-            //     break;
+                console.log('37, 39')
+                return true
             case 38: case 40:
                 var rowInputs = row.children('td').children('input[type=number]')
                 var colIdx = rowInputs.index(cell)

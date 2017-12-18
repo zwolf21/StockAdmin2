@@ -28,7 +28,7 @@
             <tr>
                 <td class="text-center">{{ object.slug }}</td>
                 <td><a href="{{ object.get_absolute_url }}">{{ object.description }}</a></td>
-                <td class="text-center">{{ object.completed_percent }}%</td>
+                <td class="text-center">{% widthratio object.get_complete_rate 1 100 %}%</td>
                 <td class="text-center">{{ object.commiter|default:"미승인" }}</td>
             </tr>
             {% endfor %}

@@ -62,7 +62,7 @@ LOOKUP_CONTEXTS = {
         ],
         'market': [
             'buyinfo__market__name',
-        ]
+        ],
     },
     'Product': {
         'contains': [

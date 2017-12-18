@@ -31,11 +31,11 @@
                 <td>{{ item.buyinfo.product.company }} </td>
                 <td>{{ item.buyinfo.product }}</td>
                 <td class="text-right">{{ item.amount|intcomma }} {{ item.buyinfo.product.std_unit }}</td>
-                <td>{{ item.stocked_amount }}</td>
+                <td class="text-right">{{ item.get_stocked_sum }}</td>
                 <td>
                     <div class="progress">
                         <div class="progress-bar bg-success" style="width:{{ item.stocked_percent }}%;"></div>
-                        {% if item.end %}
+                        {% if item.isend %}
                         <div class="progress-bar bg-danger" style="width:{{ item.ended_percent }}%"></div>
                         {% endif %}
                     </div>

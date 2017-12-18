@@ -46,32 +46,36 @@
                 <th>거래처</th>
                 <th>판매사</th>
                 <th>제품명</th>
+                <th>입고상태</th>
+                <th>구매단가</th>
                 <th>구매수량</th>
                 <th>입고된수량</th>
-                <th>구매단가</th>
+                <th>입고된가격</th>
                 <th>총구매액</th>
             </tr>
         </thead>
         <tbody>
             {% for object in object_list %}
             <tr>
-                <td class="text-center">{{ object.buy_slug }}</td>
-                <td class="text-center">{{ object.market_name }}</td>
-                <td class="text-center">{{ object.company }}</td>
-                <td>{{ object.product_name }}</td>
-                <td class="text-right">{{ object.buyitem_amount }}</td>
-                <td class="text-right">{{ object.stocked_amount_sum }}</td>
-                <td class="text-right">{{ object.price|intcomma }}</td>
+                <td class="text-center">{{ object.buy.slug }}</td>
+                <td class="text-center">{{ object.buyinfo.market }}</td>
+                <td class="text-center">{{ object.buyinfo.product.company }}</td>
+                <td>{{ object.buyinfo.product.name }}</td>
+                <td class="text-center">{{ object.stock_status }}</td>
+                <td class="text-right">{{ object.buyinfo.price|intcomma }}</td>
+                <td class="text-right">{{ object.amount|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_amount_sum|default:0|intcomma }}</td>
+                <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
                 <td class="text-right">{{ object.buy_price_sum|intcomma }}</td>
             </tr>
             {% endfor %}
-            <tr>
-                <td class="text-center" colspan="7">종합</td>
-                <td class="text-right">{{ total_stocked_price|intcomma }}</td>
-            </tr>
         </tbody>
     </table>
+    <div class="text-right">
+        <span><b>구매금액 종합: {{ total_buy_price|intcomma }}</b></span>
+    </div>
 {% elif request.path == product_url %}
+
 <table class="tablesorter tablesorter-sortable table-bordered">
     <thead>
         <tr>
@@ -79,9 +83,7 @@
             <th>제품명</th>
             <th>거래처</th>
             <th>제품단가</th>
-            <th>총입고수량</th>
             <th>총구매수량</th>
-            <th>총입고가격</th>
             <th>총구매가</th>
         </tr>
     </thead>
@@ -89,22 +91,18 @@
         {% for object in object_list %}
         <tr>
             <td class="text-center">{{ object.product_code }}</td>
-            <td>{{ object.market_name }}</td>
             <td>{{ object.product_name }}</td>
+            <td>{{ object.market_name }}</td>
             <td class="text-right">{{ object.price|intcomma }}</td>
-            <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
             <td class="text-right">{{ object.buy_amount_sum|intcomma }}</td>
-            <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
             <td class="text-right">{{ object.buy_price_sum|intcomma }}</td>
         </tr>
         {% endfor %}
-        <tr>
-            <td class="text-center" colspan="7">종합</td>
-            <td class="text-right">{{ total_stocked_price|intcomma }}</td>
-        </tr>
     </tbody>
 </table>
-
+<div class="text-right">
+    <span><b>구매금액 종합: {{ total_buy_price|intcomma }}</b></span>
+</div>
 {% elif request.path == buyinfo_url %}
 <table class="tablesorter tablesorter-sortable table-bordered">
     <thead>
@@ -114,9 +112,7 @@
             <th>제품명</th>
             <th>제품단가</th>
             <th>총구매수량</th>
-            <th>총입고수량</th>
             <th>총구매가</th>
-            <th>총입고가격</th>
         </tr>
     </thead>
     <tbody>
@@ -127,23 +123,21 @@
             <td>{{ object.product_name }}</td>
             <td class="text-center">{{ object.price|intcomma }}</td>
             <td class="text-right">{{ object.buy_amount_sum|intcomma }}</td>
-            <td class="text-right">{{ object.stocked_amount_sum|intcomma }}</td>
             <td class="text-right">{{ object.buy_price_sum|intcomma }}</td>
-            <td class="text-right">{{ object.stocked_price_sum|intcomma }}</td>
         </tr>
         {% endfor %}
-        <tr>
-            <td class="text-center" colspan="7">종합</td>
-            <td class="text-right">{{ total_stocked_price|intcomma }}</td>
-        </tr>
     </tbody>
 </table>
+<div class="text-right">
+    <span><b>구매금액 종합: {{ total_buy_price|intcomma }}</b></span>
+</div>
 {% elif request.path == market_url %}
 <table class="tablesorter tablesorter-sortable table-bordered">
     <thead>
         <tr>
             <th>거래처</th>
             <th>구매건수</th>
+            <th>구매품목건수</th>
             <th>총구매가격</th>
         </tr>
     </thead>
@@ -151,16 +145,16 @@
         {% for object in object_list %}
         <tr>
             <td class="text-center">{{ object.market_name }}</td>
+            <td class="text-right">{{ object.buy_count|intcomma }}</td>
             <td class="text-right">{{ object.buyitem_count|intcomma }}</td>
             <td class="text-right">{{ object.buy_price_sum|intcomma }}</td>
         </tr>
         {% endfor %}
-        <tr>
-            <td class="text-center" colspan="2">종합</td>
-            <td class="text-right">{{ total_stocked_price|intcomma }}</td>
-        </tr>
     </tbody>
 </table>
+<div class="text-right">
+    <span><b>구매금액 종합: {{ total_buy_price|intcomma }}</b></span>
+</div>
 {% endif %}
     
 </div>

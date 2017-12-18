@@ -12,12 +12,15 @@
             {% include "buy/components/filter_form.html" %}
         </div>
         <div class="col-6 text-right">
-            <a class="btn btn-secondary btn-sm" href="{% url 'buy:stock-stocked' %}?{{ request.GET.urlencode }}">
-                입고수정<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
-            </a>            
             <a class="btn btn-secondary btn-sm" href="{% url 'buy:stock-agg' 'StockRecord' %}?{{ request.GET.urlencode }}">
                 입고내역<i class="fa fa-search" aria-hidden="true"></i>
             </a>
+            <a class="btn btn-secondary btn-sm" href="{% url 'buy:stock-stocked' %}?{{ request.GET.urlencode }}">
+                입고수정<i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+            </a>            
+            <a class="btn btn-secondary btn-sm" href="{% url 'buy:buyitem-update-set' %}?{{ request.GET.urlencode }}">
+                종결내역<i class="fa fa-battery-quarter" aria-hidden="true"></i>
+            </a>            
         </div>
     </div>
 </form>
@@ -36,7 +39,7 @@
             <label>입고일자지정:</label>
             {% render_field form.date class="form-control-sm datepicker" readonly="true" tabindex="-1" %}
         </div>
-        <table class="table-bordered tablesorter tablesorter-sortable grid-table">
+        <table class="table-bordered tablesorter tablesorter-sortable">
             <thead class="text-center thead-light">
                 <tr>
                     <th>구매번호</th>
@@ -79,8 +82,13 @@
 {% block extra_scrip %}
 <script>
 $(function(){
+
     
-    $('input[name*=amount]').keydown(function(event){
+    $('input[name$=amount]').keyup(function(event){
+        console.log(event)
+    })
+
+    $('input[name$=amount]').keydown(function(event){
         var kc = event.keyCode
         var step = parseInt($(this).attr('step'))
         var max = parseInt($(this).attr('max'))
@@ -95,6 +103,7 @@ $(function(){
             }
             return false
         }else if (kc == 39) {
+            console.log(cur)
             var amount = cur+step
             if (amount <= max) {
                 $(this).val(amount)
