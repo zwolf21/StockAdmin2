@@ -16,9 +16,9 @@ class ProductResource(resources.ModelResource):
 
     class Meta:
         model = Product
-        fields = 'code', 'name', 'company', 'std_unit', 'pkg_amount',
+        fields = 'code', 'name', 'company', 'std_unit', 'pkg_amount', 'edi_code',
         import_id_fields = 'code', 'name',
-        export_order = 'code', 'name', 'company', 'std_unit', 'pkg_amount',
+        export_order = 'code', 'edi_code', 'name', 'company', 'std_unit', 'pkg_amount',
 
 
 class BuyInfoResource(resources.ModelResource):

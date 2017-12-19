@@ -58,7 +58,7 @@ class Buy(models.Model):
 
 class BuyItem(models.Model):
     buy = models.ForeignKey(Buy, null=True, blank=True, on_delete=models.CASCADE)
-    buyinfo = models.ForeignKey('product.BuyInfo', on_delete=models.CASCADE)
+    buyinfo = models.ForeignKey('product.BuyInfo', on_delete=models.PROTECT)
     amount = models.IntegerField('구매수량')
     comment = models.CharField('비고', max_length=50, blank=True)
     isend = models.BooleanField('구매종결', default=False)

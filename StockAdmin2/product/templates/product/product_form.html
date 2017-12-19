@@ -52,6 +52,7 @@
                     <th>전문/일반</th>
                     <th>거래가격</th>
                     <th>사용중</th>
+                    <th>삭제</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,6 +67,7 @@
                     <td>{{ buyinfo_form.pro_type }}</td>
                     <td>{{ buyinfo_form.price }}</td>
                     <td class="text-center">{{ buyinfo_form.active }}</td>
+                    <th>{{ buyinfo_form.DELETE }}</th>
                 </tr>
                 {% endfor %}
             </tbody>

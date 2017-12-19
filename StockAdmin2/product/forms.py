@@ -9,7 +9,7 @@ def get_buyinfo_inline_formset(request, instance, **kwargs):
         'product', 'market', 'date', 'price', 'active',
         'pro_type', 'pay_type',
     ]
-    FormSet = inlineformset_factory(Product, BuyInfo, fields=fields, **kwargs)
+    FormSet = inlineformset_factory(Product, BuyInfo, fields=fields, can_delete=True, **kwargs)
     if request.method == "POST":
         return FormSet(request.POST or None, instance=instance)
     return FormSet(instance=instance)
