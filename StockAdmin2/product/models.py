@@ -25,7 +25,11 @@ class Market(models.Model):
 
 
 
-STD_UNITs = 'TAB', 'CAP', 'VIAL', 'AMP', 'TUBE', 'SYR', 'PEN', 'BTL', 'BAG', '포',
+STD_UNITs = [
+    'TAB', 'CAP', 'VIAL', 'AMP', 'BTL', 'EA', 'ML', 'SYR', 'BAG', '포', '통',
+    '매', 'PEN', 'G', '관', 'PKG', 'POWD', 'FILM', 'KIT', 'SC', 'GRAN', 'SET',
+    'IU', 'PFS', 'SUPP', 'GEL', 'TUBE'
+]
 ETC_CLASS = '일반', '항암제', '마약', '향정', '수액', '영양수액', '인슐린주사', '백신', '조영제', '처치약품', '소모품', '직송'
 
 class Product(models.Model):
@@ -62,6 +66,7 @@ class BuyInfo(BuyInfoMixin, models.Model):
     slug = models.SlugField('구매코드', unique=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     market = models.ForeignKey(Market, on_delete=models.CASCADE, null=True, blank=True)
+    buy_edi_code = models.CharField('보험코드', max_length=50, blank=True)
     date = models.DateField('시작일자', blank=True, default=timezone.now)
     price = models.DecimalField('구매가격', max_digits=50, decimal_places=2)
     pay_type = models.CharField('급여구분', blank=True, max_length=50)

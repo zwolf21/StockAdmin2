@@ -44,6 +44,7 @@
         <tr>
             <th>도매상</th>
             <th>거래시작일</th>
+            <th>보험코드</th>
             <th>급여구분</th>
             <th>전문/일반</th>
             <th>거래가격</th>
@@ -55,6 +56,7 @@
         <tr>
             <td>{{ info.market }}</td>
             <td>{{ info.date|date:"Y-m-d" }}</td>
+            <td>{{ info.buy_edi_code }}</td>
             <td>{{ info.pay_type }}</td>
             <td>{{ info.pro_type }}</td>
             <td>{{ info.price }}</td>
@@ -67,6 +69,5 @@
 <div class="col-12 text-right">
     <a class="btn btn-info btn-sm" href="{% url 'product:list' %}">목록으로</a>
     <a class="btn btn-warning btn-sm" href="{% url 'product:update' object.pk %}">제품 정보 수정</a>
-    <a class="btn btn-warning btn-sm" href="{% url 'product:api-update' object.pk %}">구매정보 자동업데이트</a>
 </div>
 {% endblock product_content %}

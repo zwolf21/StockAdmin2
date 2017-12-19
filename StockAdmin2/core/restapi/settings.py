@@ -30,6 +30,6 @@ RENAMES={
   'payTpNm': 'pay_type',
   'spcGnlTpNm': 'pro_type',
   'optCpmdImplTpNm':'op_type',
-  'nomNm': 'std_unit_amount',
+  'nomNm': 'unit_amount',
 }
 

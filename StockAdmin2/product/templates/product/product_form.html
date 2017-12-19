@@ -1,4 +1,5 @@
 {% extends "product/product_base.html" %}
+{% load widget_tweaks %}
 
 {% block product_header %}
 <h4>제품 정보 수정</h4>
@@ -37,10 +38,19 @@
             </tr>
             <tr>
                 <th>보험코드</th>
-                <th>{{ form.edi_code }}</th>
+                <td>{{ form.edi_code|attr:"placeholder:자동업데이트 가능하려면 보험코드 필요" }}</td>
+                <th>
+                    {% if form.instance.edi_code %}
+                    <a class="btn btn-warning btn-sm" href="{% url 'product:api-update' object.pk %}" style="height: 25px; padding-top: 1px;">자동업데이트</a>
+                    {% else %}
+                    <a class="btn btn-secondary btn-sm disabled" href="{% url 'product:api-update' object.pk %}" style="height: 25px; padding-top: 1px;">자동업데이트</a>
+                    {% endif %}
+                    
+                </th>
             </tr>
 
         </table>
+
         <h5>거래정보</h5>
         {{ formset.management_form }}
         <table class="product-info tablesorter" border="1">
@@ -48,6 +58,7 @@
                 <tr>
                     <th>도매상</th>
                     <th>거래시작일</th>
+                    <th>보험코드</th>
                     <th>급여구분</th>
                     <th>전문/일반</th>
                     <th>거래가격</th>
@@ -63,16 +74,22 @@
                 <tr>
                     <td>{{ buyinfo_form.market }}</td>
                     <td>{{ buyinfo_form.date }}</td>
+                    <td>{{ buyinfo_form.buy_edi_code }}</td>
                     <td>{{ buyinfo_form.pay_type }}</td>
                     <td>{{ buyinfo_form.pro_type }}</td>
                     <td>{{ buyinfo_form.price }}</td>
                     <td class="text-center">{{ buyinfo_form.active }}</td>
+                    {% if buyinfo_form.instance.buyitem_set.exists %}
+                    <td class="text-center">삭제불가</td> 
+                    {% else %}
                     <th>{{ buyinfo_form.DELETE }}</th>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <div class="col-12 text-right">
+            <a class="btn btn-secondary btn-sm" href="{{ form.instance.get_absolute_url }}">돌아가기</a>
             {% if 'buyinfo' not in request.path %}
             <a class="btn btn-warning btn-sm" href="{% url 'product:update-buyinfo-create' form.instance.pk %}">거래정보생성</a>
             {% endif %}

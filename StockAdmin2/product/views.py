@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.urls import reverse_lazy
 from django.views.generic import *
 
 from .models import Market, Product, BuyInfo
 from .forms import get_buyinfo_inline_formset
 from .services import update_info_by_api
 from core.filter import QueryFilter
-
+from core.restapi.updater import smart_update
 
 
 
@@ -37,6 +38,7 @@ class ProductUpdateView(UpdateView):
                 'apply_root', 'unit', 'unit_amount', 'op_type', 'edi_code',
             ]
     formset_extra = 0
+    success_url = '.'
 
     def get_context_data(self, **kwargs):
         context = super(ProductUpdateView, self).get_context_data(**kwargs)
@@ -60,8 +62,8 @@ class ProductUpdateBuyInfoCreateView(ProductUpdateView):
 
 def api_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    update_info_by_api(product)
-    return redirect(product.get_absolute_url())
+    smart_update(product)
+    return redirect(reverse('product:update', args=(pk,)))
 
 
 

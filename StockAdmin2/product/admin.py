@@ -23,7 +23,7 @@ class BuyInfoInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(ProductImportExportAdmin):
-    list_display = 'code', 'name', 'company', 'std_unit', 'pkg_amount',
+    list_display = 'code', 'name','edi_code', 'company', 'std_unit', 'pkg_amount',
     list_filter = 'std_unit',
     search_fields = 'name', 'company',
     list_editable = 'name', 'company', 'std_unit', 'pkg_amount',
@@ -33,7 +33,7 @@ class ProductAdmin(ProductImportExportAdmin):
 
 @admin.register(BuyInfo)
 class BuyInfoAdmin(BuyInfoImportExportAdmin):
-    list_display = 'product', 'market', 'date', 'price', 'active',
+    list_display = 'product', 'market', 'buy_edi_code', 'date', 'price', 'active',
     list_filter = 'date', 'active', 'product__std_unit',
     search_fields = 'product__name',
     autocomplete_fields = 'product',

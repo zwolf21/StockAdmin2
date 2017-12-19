@@ -52,6 +52,7 @@ class DGamtService(object):
         lst = Listorm(records)
         if renames:
             lst = lst.rename(**renames)
+            lst = lst.add_columns(buy_edi_code=lambda row:row.edi_code)
         return lst
 
 # api = APIRequest('getDgamtList', api_key)
