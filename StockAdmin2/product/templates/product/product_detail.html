@@ -29,9 +29,9 @@
         <th>적용방법</th>
         <td>{{ object.apply_root }}</td>
         <th>마약류구분</th>
-        <td>{{ object.op_type }}</td>
+        <td>{{ object.op_type|default:"" }}</td>
         <th>적용단위</th>
-        <td>{{ object.unit }} {{ object.unit_amount }}</td>
+        <td>{{ object.unit_amount }} {{ object.unit }}</td>
     </tr>
     <tr>
         <th>보험코드</th>

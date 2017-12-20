@@ -16,9 +16,15 @@ class ProductResource(resources.ModelResource):
 
     class Meta:
         model = Product
-        fields = 'code', 'name', 'company', 'std_unit', 'pkg_amount', 'edi_code', 'etc_class',
+        fields = [
+            'code', 'name', 'company', 'edi_code', 'std_unit', 'pkg_amount', 'etc_class', 'apply_root',
+            'unit', 'unit_amount',
+        ]
         import_id_fields = 'code', 'name',
-        export_order = 'code', 'edi_code', 'name', 'company', 'std_unit', 'pkg_amount', 'std_unit' 
+        export_order =  [
+            'code', 'name', 'company', 'edi_code', 'std_unit', 'pkg_amount', 'etc_class', 'apply_root',
+            'unit', 'unit_amount',
+        ]
 
 
 class BuyInfoResource(resources.ModelResource):
@@ -35,7 +41,10 @@ class BuyInfoResource(resources.ModelResource):
 
     class Meta:
         model = BuyInfo
-        fields = 'market', 'product', 'buy_edi_code', 'date', 'price', 'active', 'slug',
+        fields = [
+            'market', 'product', 'buy_edi_code', 'date', 'price', 'active', 'slug', 'pay_type', 'pro_type',
+        ]
         import_id_fields = 'slug',
-        export_order = 'market', 'product', 'buy_edi_code', 'date', 'price', 'active', 'slug',
-
+        export_order = [
+            'market', 'product', 'buy_edi_code', 'date', 'price', 'active', 'slug', 'pay_type', 'pro_type',
+        ]

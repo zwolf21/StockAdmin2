@@ -4,7 +4,6 @@ from django.views.generic import *
 
 from .models import Market, Product, BuyInfo
 from .forms import get_buyinfo_inline_formset
-from .services import update_info_by_api
 from core.filter import QueryFilter
 from core.restapi.updater import smart_update
 

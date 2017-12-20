@@ -55,46 +55,6 @@ class DGamtService(object):
             lst = lst.add_columns(buy_edi_code=lambda row:row.edi_code)
         return lst
 
-# api = APIRequest('getDgamtList', api_key)
-# lst = api.getDgamtList(mdsCd='652600384')
-# pprint(lst.first)
-
-
-# def check_price_change(edi, price):
-#     api = APIRequest('getDgamtList', api_key)
-#     lst = api.getDgamtList(mdsCd=edi)
-#     if lst:
-#         info = lst.first
-#         if str(price) != info.mxCprc:
-#             return info
-
-# def check_price_change_thread(edi_price_set):
-#     max_workers = 5
-#     wokers = len(edi_price_set)
-#     # args = [(key, val) for key, val in edi_price_set.items()]
-#     records = []
-#     with ThreadPoolExecutor(min(max_workers, wokers)) as executor:
-#         todo_list = [
-#             executor.submit(check_price_change, *arg) for arg in edi_price_set
-#         ]
-#         done_iter = as_completed(todo_list)
-#         for future in done_iter:
-#             record = future.result()
-#             records.append(record)
-#     return Listorm(filter(None, records))
-
-
-# ret=check_price_change('652600384', 631)
-# print(ret)
-# def ext_edi_price_from_excel(*args, **kwargs):
-#     lst = read_excel(*args, **kwargs).select('EDI코드', '보험단가', values=True)
-#     return lst
-
-# ediset= ext_edi_price_from_excel('약품정보.xls')
-# ediset = {t[0]: t[1] for t in ediset}
-# print(ediset[:100])
-# ret = check_price_change_thread(ediset[100:150])
-# pprint(ret)
 
 
 

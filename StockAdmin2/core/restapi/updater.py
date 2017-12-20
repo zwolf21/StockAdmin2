@@ -30,7 +30,6 @@ UPDATE_METHOD = {
 
 
 
-
 def get_newest_record(edi_code, recursive_try=5):
     if recursive_try == 0:
         return edi_code
@@ -49,8 +48,6 @@ def get_newest_record(edi_code, recursive_try=5):
             )
         return record  
 
-# def get_product_buyinfo(product):
-
 
 
 def get_fieldset_for_update(instance, new_record, update_methods=UPDATE_METHOD):
@@ -59,8 +56,8 @@ def get_fieldset_for_update(instance, new_record, update_methods=UPDATE_METHOD):
     updates, creates = {}, {}
     for method, fields in update_context.items():
         for field in fields:
-            oldVal = str(getattr(instance, field, ''))
-            newVal = str(getattr(new_record, field, ''))
+            oldVal = str(getattr(instance, field) or '')
+            newVal = str(getattr(new_record, field) or '')
             if not newVal:
                 continue
             if oldVal != newVal:
@@ -80,7 +77,6 @@ def record_isvalid(record):
 
 def smart_update(product, update_methods=UPDATE_METHOD):
     new_record = get_newest_record(product.edi_code)
-
     if not new_record:
         return
 
@@ -108,8 +104,10 @@ def smart_update(product, update_methods=UPDATE_METHOD):
     buyinfo_create_kwargs['product'] = product
     buyinfo_update_kwargs['product'] = product
 
-
     if not buyinfo_set.exists():
+        if not new_price:
+            print(new_price)
+            buyinfo_create_kwargs['price'] = 0
         buyinfo_set.create(**buyinfo_create_kwargs)
     else:
         buyinfo_create_kwargs['market'] = market
@@ -124,65 +122,6 @@ def smart_update(product, update_methods=UPDATE_METHOD):
             buyinfo_update_kwargs.pop('price')
             buyinfo_set.update(**buyinfo_update_kwargs)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-def update_from_rest_api(product, recursive=5):
-    if recursive == 0:
-        return 
-
-    edi_code = product.edi_code
-    if not edi_code:
-        return
-
-    api = DGamtService()
-    api_lst = api.getDgamtList(mdsCd=edi_code)
-    api_lst = api_lst.set_number_type(price=0)
-
-    if not api_lst:
-        return
-
-    sch = api_lst.first
-
-    if sch.edi_code_after:
-        product.edi_code = sch.edi_code_after
-        product.save()
-        return update_from_rest_api(product, recursive=recursive-1)
-
-    buyinfo_set = product.buyinfo_set.filter(active=True)
-    fields_for_create = sch.select(*buyinfo_supervise_field, values=False)
-
-    if not buyinfo_set.exists():
-        buyinfo_set.create(product=product, **fields_for_create)
-    else:
-        don_need_to_create = False
-        for buyinfo in buyinfo_set:
-            for field, how in buyinfo_supervise_field.items():
-                ori_val = str(getattr(buyinfo, field))
-                api_val = str(getattr(sch, field))
-                if ori_val != api_val:
-                    if how == 'update' and api_val:
-                        setattr(buyinfo, field, api_val)
-                        buyinfo.save()
-
-                if ori_val == api_val and how=='create' and api_val:
-                    don_need_to_create = True
-        
-        if don_need_to_create == False:
-            print('creating buyinfo...', product)
-            market = buyinfo_set.filter(market__isnull=False).last().market
-            buyinfo_set.create(product=product, market=market, **fields_for_create)
-    return True
 
 
 
