@@ -20,11 +20,13 @@ buyinfo_supervise_field = {
 # update: 변경시 레코드 항목 수정만하기 create: 변경사항 발생시 새로 만들기
 UPDATE_METHOD = {
     'product': {
-        'update': ['edi_code', 'unit', 'company', 'unit_amount', 'apply_root', 'op_type'],
+        'update': [
+            'edi_code', 'unit', 'company', 'unit_amount', 'apply_root', 'op_type'
+        ],
     },
     'buyinfo': {
         'create': ['buy_edi_code', 'price'], 
-        'update': ['pro_type', 'pay_type']
+        'update': ['pro_type', 'pay_type', 'date']
     }
 }
 

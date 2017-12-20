@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests, xmltodict
 from listorm import Listorm, read_excel
+from dateutil.parser import parse
 
 from .settings import RENAMES
 
@@ -53,6 +54,7 @@ class DGamtService(object):
         if renames:
             lst = lst.rename(**renames)
             lst = lst.add_columns(buy_edi_code=lambda row:row.edi_code)
+            lst = lst.update(date=lambda row: parse(row.date))
         return lst
 
 
