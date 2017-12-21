@@ -75,6 +75,19 @@ function redirectFormActionOnClick(formSelector, btnSelector, redirectTo) {
     })
 }
 
+function printArea(areaSelector) {
+    var printArea = window.open('', 'pop1', 'width=900, height=500, left=200, top=200, scrollbars=no, toolbars=no, location=no')
+    printArea.document.write('<!DOCTYPE html>')
+    printArea.document.write('<head>')
+    printArea.document.write($('head').html())
+    printArea.document.write('</head>')
+    printArea.document.write('<body>')
+    printArea.document.write($(areaSelector).html())
+    printArea.document.write('</body>')
+    printArea.document.write('<script>window.print();window.close();<\/script>')
+
+}
+
 
 
 

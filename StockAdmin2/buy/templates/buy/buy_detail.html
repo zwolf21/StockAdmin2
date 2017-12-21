@@ -2,16 +2,40 @@
 {% load humanize %}
 
 {% block buy_header %}
+<div class="col-12">
 <h4>구매요청서 상세</h4>
+</div>
 {% endblock buy_header %}
 
 {% block buy_content %}
-<div class="col-12 my-3">
-    도매상: {{ object.buyitem_set.first.buyinfo.market }}</br>
-    구매번호: {{ object.slug }}
+<div class="col-12">
+        <div class="row px-3">
+        <div class="col-8">
+            거래처: {{ object.buyitem_set.first.buyinfo.market }}</br>
+            구매번호: {{ object.slug }}<br>
+            구매건수: {{ object.buyitem_set.all|length }}건 <br>
+            총구매액: {{ object.get_total_price_sum|intcomma }}     
+        </div>
+        <div class="col-4">
+            <table class="table table-bordered table-sm h-100 text-center">
+                <thead>
+                    <tr>
+                        <td>담당자</td>
+                        <td>발주승인</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="align-middle">{{ request.user }}</td>
+                        <td class="align-middle"> {{ object.commiter|default:"" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>   
 </div>
-<hr>
-<div class="col-12 px-3"> 
+<div class="text-right">
+</div>
     <table class="table-bordered tablesorter tablesorter-sortable">
         <thead class="thead-default text-center">
             <tr>
@@ -19,7 +43,7 @@
                 <th>판매사</th>
                 <th>구매항목</th>
                 <th>구매수량</th>
-                <th>입고량</th>
+                <th>현재입고량</th>
                 <th>입고율</th>
                 <th>비고</th>
             </tr>
@@ -42,11 +66,12 @@
                 </td>
                 <td>{{ item.comment }}</td>
             </tr>
-
             {% endfor %}
         </tbody>
     </table>
     <div class="col-12 text-right">
+        <button class="btn btn-secondary btn-sm" onclick="printArea('.print-area')">출력<i class="fa fa-print" aria-hidden="true"></i>
+</button>
         <a class="btn btn-info btn-sm" href="{% url 'buy:buy-list' %}">목록으로</a>
         {% if object.commiter %}
             {% if object.has_stockset %}
@@ -62,6 +87,9 @@
             {% endif %}
         {% endif %}
     </div>
-</div>
+
+    <div class="print-area">
+        {% include "buy/components/print/buy_detail_print.html" %}
+    </div>
 
 {% endblock buy_content %}

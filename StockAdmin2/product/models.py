@@ -17,8 +17,8 @@ class Market(models.Model):
     objects = MarketManager()
 
     class Meta:
-        verbose_name = '도매상'
-        verbose_name_plural = '도매상'
+        verbose_name = '거래처'
+        verbose_name_plural = '거래처'
 
     def __str__(self):
         return self.name

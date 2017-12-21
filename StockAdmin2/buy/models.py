@@ -55,6 +55,10 @@ class Buy(models.Model):
     def has_stockset(self):
         return StockRecord.objects.filter(amount__gt=0, buyitem__buy=self).exists()
 
+    def get_total_price_sum(self):
+        annoset, total_price = self.buyitem_set.all().group_by_fk(only_valid=False)
+        return total_price
+
 
 class BuyItem(models.Model):
     buy = models.ForeignKey(Buy, null=True, blank=True, on_delete=models.CASCADE)
@@ -111,6 +115,10 @@ class BuyItem(models.Model):
             return '완료'
         else:
             return '입고중'
+
+    def get_buy_price(self):
+        price = self.buyinfo.price or 0
+        return self.amount * price
 
     @property
     def iscompleted(self):

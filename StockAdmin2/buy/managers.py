@@ -5,11 +5,14 @@ from django.db.models import *
 
 class BuyItemQuerySet(models.QuerySet):
 
-    def get_valid_set(self):
+    def get_valid_set(self, **kwargs):
         return self.filter(buy__isnull=False, buy__commiter__isnull=False)
 
-    def group_by_fk(self, model_name, get_total_price=True):
-        qs = self.get_valid_set()
+    def group_by_fk(self, model_name=None, get_total_price=True, only_valid=True):
+        if only_valid:
+            qs = self.get_valid_set()
+        else:
+            qs = self
 
         if model_name == 'Product':
             group_key = 'buyinfo__product'

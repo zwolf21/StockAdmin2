@@ -11,11 +11,13 @@ class BuyForm(forms.ModelForm):
         model = Buy
         fields = 'commiter',
 
-
+search_placeholder = '검색어 입력, 이미 입력된 품목은 뜨지 않음'
 
 class BuyItemForm(forms.ModelForm):
     selected = forms.BooleanField(initial=False, required=False)
-    buyinfo_name = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': '검색어 입력'}))
+    buyinfo_name = forms.CharField(
+        required=False, widget=forms.widgets.TextInput(attrs={'placeholder': search_placeholder})
+    )
     class Meta:
         model = BuyItem
         fields = 'buy', 'buyinfo', 'amount', 'comment', 

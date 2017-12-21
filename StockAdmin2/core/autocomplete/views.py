@@ -1,5 +1,5 @@
 from pprint import pprint
-from ..models import BuyInfo, Market
+from ..models import BuyInfo, Market, BuyItem
 
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter
@@ -16,9 +16,21 @@ class BuyInfoListAPIView(ListAPIView):
 
     def get_queryset(self):
         queryset = super(BuyInfoListAPIView, self).get_queryset()
-        market_id = self.kwargs.get('market')
-        if market_id:
-            return queryset.filter(market__id=market_id)
+        slug = self.kwargs.get('slug')
+
+        market = None
+        if slug:
+            buyitem_set = BuyItem.objects.filter(buy__slug=slug)
+            if buyitem_set.exists():
+                market = buyitem_set.first().buyinfo.market
+        else:
+            buyitem_set = BuyItem.objects.filter(buy__isnull=True)
+
+        queryset = queryset.exclude(buyitem__in=buyitem_set)
+
+        if market:
+            queryset = queryset.filter(market=market)
+
         return queryset
 
 

@@ -64,7 +64,7 @@
 {% block extra_scrip %}
 {{ block.super }}
 {% if object.buyitem_set.exists %}
-    {% url 'core:autocomplete:api-buyinfo-market' object.buyitem_set.first.buyinfo.market.id as autocomplete_url %}
+    {% url 'core:autocomplete:api-buyinfo-market' object.slug as autocomplete_url %}
 {% else %}
     {% url 'core:autocomplete:api-buyinfo' as autocomplete_url %}
 {% endif %}
