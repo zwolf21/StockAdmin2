@@ -8,8 +8,8 @@ from listorm import Listorm, read_excel
 from dateutil.parser import parse
 
 from .settings import RENAMES
+from django.conf import settings
 
-API_KEY='zTow8Fpaq1g8Y2mHdZAxWogNcvf9c5DTGNVvVV1tq47bvqUdk9q68QTm2SfteuK4pylybnqEWhi2hMBM5Cc5pQ%3D%3D'
 
 
 class DGamtService(object):
@@ -18,7 +18,7 @@ class DGamtService(object):
         'getCmdcDgamtList': 'http://apis.data.go.kr/B551182/dgamtCrtrInfoService/getCmdcDgamtList',
     }
 
-    def __init__(self, api_name='getDgamtList', api_key=API_KEY):
+    def __init__(self, api_name='getDgamtList', api_key=settings.DGAMT_API_KEY):
         self.api_name = api_name
         self.api_key = api_key
         self.api_url = self.API_NAME_URL.get(api_name)
