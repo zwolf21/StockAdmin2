@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.urls import reverse_lazy
 from django.views.generic import *
 
+from djangoslicer import SlicePaginatorMixin
+
 from .models import Market, Product, BuyInfo
 from .forms import get_buyinfo_inline_formset
 from core.filter import QueryFilter
@@ -9,8 +11,9 @@ from core.restapi.updater import smart_update
 
 
 
-class ProductListView(ListView):
+class ProductListView(SlicePaginatorMixin, ListView):
     model = Product
+    paginate_by = 25
 
     def get_queryset(self):
         qs = super(ProductListView, self).get_queryset()

@@ -70,10 +70,11 @@
         </tbody>
     </table>
     <div class="col-12 text-right">
-        <button class="btn btn-secondary btn-sm" onclick="printArea('.print-area')">출력<i class="fa fa-print" aria-hidden="true"></i>
-</button>
         <a class="btn btn-info btn-sm" href="{% url 'buy:buy-list' %}">목록으로</a>
         {% if object.commiter %}
+            <button class="btn btn-secondary btn-sm" onclick="printArea('.print-area')">
+                출력<i class="fa fa-print" aria-hidden="true"></i>
+            </button>
             {% if object.has_stockset %}
                 <button class="btn btn-danger btn-sm disabled">구매요청서 삭제</button>
             {% else %}
