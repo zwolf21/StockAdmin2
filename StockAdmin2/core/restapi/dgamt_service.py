@@ -7,9 +7,10 @@ import requests, xmltodict
 from listorm import Listorm, read_excel
 from dateutil.parser import parse
 
-from .settings import RENAMES
-
-API_KEY='zTow8Fpaq1g8Y2mHdZAxWogNcvf9c5DTGNVvVV1tq47bvqUdk9q68QTm2SfteuK4pylybnqEWhi2hMBM5Cc5pQ%3D%3D'
+try:
+    from .settings import RENAMES
+except:
+    from settings import RENAMES
 
 
 class DGamtService(object):
@@ -30,7 +31,8 @@ class DGamtService(object):
             items = response['response']['body']['items']
             totalCount = response['response']['body']['totalCount']
         except:
-            raise ValueError('Can not Retrieve response')
+            # raise ValueError('Can not Retrieve response')
+            print(response)
         else:
             if items:
                 ret = items['item']
@@ -43,6 +45,8 @@ class DGamtService(object):
     def _get(self, **kwargs):
         kwargs['ServiceKey'] = unquote(self.api_key)
         r = requests.get(self.api_url, params=kwargs)
+        print(r.content)
+
         return r.content
 
     def getDgamtList(self, renames=RENAMES, **kwargs):
@@ -56,10 +60,6 @@ class DGamtService(object):
             lst = lst.add_columns(buy_edi_code=lambda row:row.edi_code)
             lst = lst.update(date=lambda row: parse(row.date))
         return lst
-
-
-
-
 
 
 
