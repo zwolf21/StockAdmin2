@@ -1,4 +1,5 @@
 media/*
+staticroot/*
 Scripts/
 bin/
 lib/
@@ -12,4 +13,5 @@ man/
 .Python
 *.py[cod]
 *.json
+keys.py
 db.sqlite3

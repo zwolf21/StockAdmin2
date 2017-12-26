@@ -7,10 +7,8 @@ import requests, xmltodict
 from listorm import Listorm, read_excel
 from dateutil.parser import parse
 
-try:
-    from .settings import RENAMES
-except:
-    from settings import RENAMES
+from .settings import RENAMES
+from django.conf import settings
 
 
 class DGamtService(object):
@@ -19,7 +17,7 @@ class DGamtService(object):
         'getCmdcDgamtList': 'http://apis.data.go.kr/B551182/dgamtCrtrInfoService/getCmdcDgamtList',
     }
 
-    def __init__(self, api_name='getDgamtList', api_key=API_KEY):
+    def __init__(self, api_name='getDgamtList', api_key=settings.DGAMT_API_KEY):
         self.api_name = api_name
         self.api_key = api_key
         self.api_url = self.API_NAME_URL.get(api_name)
