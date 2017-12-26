@@ -11,6 +11,7 @@ from .settings import RENAMES
 from django.conf import settings
 
 
+
 class DGamtService(object):
     API_NAME_URL = {
         'getDgamtList' :'http://apis.data.go.kr/B551182/dgamtCrtrInfoService/getDgamtList',
@@ -43,8 +44,6 @@ class DGamtService(object):
     def _get(self, **kwargs):
         kwargs['ServiceKey'] = unquote(self.api_key)
         r = requests.get(self.api_url, params=kwargs)
-        print(r.content)
-
         return r.content
 
     def getDgamtList(self, renames=RENAMES, **kwargs):
@@ -58,6 +57,5 @@ class DGamtService(object):
             lst = lst.add_columns(buy_edi_code=lambda row:row.edi_code)
             lst = lst.update(date=lambda row: parse(row.date))
         return lst
-
 
 
