@@ -41,7 +41,7 @@ tablib==0.12.1
 traitlets==4.3.2
 typing==3.6.2
 unicodecsv==0.14.1
-urllib3==1.22
+urllib3==1.26.5
 wcwidth==0.1.7
 wfastcgi==3.0.0
 xlrd==1.1.0
